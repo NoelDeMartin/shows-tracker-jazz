@@ -21,11 +21,7 @@ function App() {
     }, [me]);
 
     if (!me.$isLoaded) {
-        return (
-            <div className="fixed inset-0 flex items-center justify-center text-4xl font-bold">
-                Loading...
-            </div>
-        );
+        return <div className="fixed inset-0 flex items-center justify-center text-4xl font-bold">Loading...</div>;
     }
 
     return (
@@ -38,7 +34,10 @@ function App() {
             ) : (
                 <ul className="mt-2 flex min-w-2xl flex-col gap-2">
                     {me.root.shows.map((show) => (
-                        <li className="flex w-full items-center justify-center rounded-md border border-gray-200 p-2 shadow-xs">
+                        <li
+                            key={show.$jazz.id}
+                            className="flex w-full items-center justify-center rounded-md border border-gray-200 p-2 shadow-xs"
+                        >
                             {show.title}
                         </li>
                     ))}

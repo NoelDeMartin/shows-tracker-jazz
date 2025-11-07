@@ -3,7 +3,8 @@ import App from './App.tsx';
 import { JazzReactProvider } from 'jazz-tools/react';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Account } from 'jazz-tools';
+import { JazzInspector } from 'jazz-tools/inspector';
+import { Account } from './schema/Account.ts';
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
@@ -15,6 +16,7 @@ createRoot(document.getElementById('root')!).render(
             AccountSchema={Account}
         >
             <App />
+            {import.meta.env.DEV && <JazzInspector />}
         </JazzReactProvider>
     </StrictMode>,
 );
