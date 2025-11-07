@@ -2,6 +2,8 @@ import { useCallback } from 'react';
 import { useAccount } from 'jazz-tools/react';
 import { Account } from './schema/Account';
 import { Show } from './schema/Show';
+import { Button } from '@/components/ui/button';
+import { Item, ItemContent, ItemTitle } from '@/components/ui/item';
 
 function App() {
     const me = useAccount(Account, {
@@ -25,31 +27,26 @@ function App() {
     }
 
     return (
-        <div className="flex h-screen flex-col items-center justify-center">
+        <div className="m-auto flex h-screen max-w-2xl flex-col items-center justify-center">
             <h1 className="text-4xl font-bold">Shows Tracker</h1>
             {me.root.shows.length === 0 ? (
-                <p className="mt-2 flex min-w-2xl items-center justify-center rounded-md bg-gray-100 p-2">
-                    No shows yet
-                </p>
+                <p className="mt-4 flex w-full items-center justify-center rounded-md bg-gray-100 p-2">No shows yet</p>
             ) : (
-                <ul className="mt-2 flex min-w-2xl flex-col gap-2">
+                <ul className="mt-4 flex w-full flex-col gap-2">
                     {me.root.shows.map((show) => (
-                        <li
-                            key={show.$jazz.id}
-                            className="flex w-full items-center justify-center rounded-md border border-gray-200 p-2 shadow-xs"
-                        >
-                            {show.title}
-                        </li>
+                        <Item key={show.$jazz.id} variant="outline" size="sm" asChild>
+                            <li>
+                                <ItemContent>
+                                    <ItemTitle>{show.title}</ItemTitle>
+                                </ItemContent>
+                            </li>
+                        </Item>
                     ))}
                 </ul>
             )}
-            <button
-                type="button"
-                className="mt-2 min-w-2xl rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:shadow-none dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-500"
-                onClick={createShow}
-            >
+            <Button onClick={createShow} className="mt-4 w-full">
                 Add Show
-            </button>
+            </Button>
         </div>
     );
 }
