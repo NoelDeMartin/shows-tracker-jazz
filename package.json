@@ -11,6 +11,7 @@
         "lint:prettier": "prettier . --check"
     },
     "dependencies": {
+        "@noeldemartin/utils": "next",
         "@radix-ui/react-separator": "^1.1.8",
         "@radix-ui/react-slot": "^1.2.4",
         "class-variance-authority": "^0.7.1",
@@ -19,6 +20,7 @@
         "lucide-react": "^0.553.0",
         "react": "^19.1.1",
         "react-dom": "^19.1.1",
+        "react-router-dom": "^7.9.5",
         "tailwind-merge": "^3.3.1",
         "tailwindcss": "^4.1.17"
     },
