@@ -1,6 +1,8 @@
+import { t } from 'i18next';
+import { useLoaderData, useRouteError, type LoaderFunctionArgs } from 'react-router-dom';
+
 import { NotFound } from '@/lib/errors/NotFound';
 import { getLoadedAccount } from '@/lib/jazz';
-import { useLoaderData, useRouteError, type LoaderFunctionArgs } from 'react-router-dom';
 
 export async function loadShow({ params }: LoaderFunctionArgs) {
     const shows = await getLoadedAccount({ root: { shows: { $each: true } } });
@@ -18,7 +20,7 @@ export function ShowNotFound() {
 
     return (
         <div className="max-w-content mx-auto">
-            <h1>{error instanceof NotFound ? '404: Show Not Found' : 'Unknown error'}</h1>
+            <h1>{error instanceof NotFound ? t('show.notFound') : t('show.unknownError')}</h1>
         </div>
     );
 }

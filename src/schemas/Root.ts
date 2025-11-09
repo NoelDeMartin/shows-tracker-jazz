@@ -1,7 +1,9 @@
 import { co } from 'jazz-tools';
-import { Show } from './Show';
 import { useAccount } from 'jazz-tools/react-core';
+
 import { Account } from '@/schemas/Account';
+
+import { Show } from './Show';
 
 export function initRoot() {
     return {

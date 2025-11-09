@@ -1,6 +1,7 @@
-import { Account } from '@/schemas/Account';
 import { PromisedValue, tap } from '@noeldemartin/utils';
 import { JazzBrowserContextManager } from 'jazz-tools/browser';
+
+import { Account } from '@/schemas/Account';
 
 const promisedContext = new PromisedValue<
     NonNullable<ReturnType<Awaited<ReturnType<typeof createJazzContextManager>>['getCurrentValue']>>

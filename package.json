@@ -16,6 +16,7 @@
         "@radix-ui/react-slot": "^1.2.4",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
+        "i18next": "^25.6.1",
         "jazz-tools": "^0.19.0",
         "lucide-react": "^0.553.0",
         "react": "^19.1.1",
@@ -25,6 +26,7 @@
         "tailwindcss": "^4.1.17"
     },
     "devDependencies": {
+        "@modyfi/vite-plugin-yaml": "^1.1.1",
         "@noeldemartin/scripts": "next",
         "@tailwindcss/vite": "^4.1.17",
         "@types/node": "^24.6.0",

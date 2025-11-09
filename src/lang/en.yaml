@@ -1,0 +1,14 @@
+header:
+    title: Shows Tracker
+
+home:
+    open: Open
+    createShow: Create Show
+    viewAllShows: View all shows →
+
+shows:
+    title: Shows
+
+show:
+    notFound: '404: Show Not Found'
+    unknownError: Unknown error

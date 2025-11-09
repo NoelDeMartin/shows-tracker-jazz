@@ -1,6 +1,7 @@
-import { initializeJazz } from '@/lib/jazz';
 import { JazzContext, JazzContextManagerContext } from 'jazz-tools/react-core';
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
+
+import { initializeJazz } from '@/lib/jazz';
 
 // Component ejected and adapted from <JazzReactProvider> in core:
 // https://github.com/garden-co/jazz/blob/main/packages/jazz-tools/src/react/provider.tsx

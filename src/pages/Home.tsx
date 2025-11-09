@@ -1,9 +1,11 @@
+import { t } from 'i18next';
+import { useCallback } from 'react';
+import { Link } from 'react-router-dom';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useShows } from '@/schemas/Root';
 import { Show } from '@/schemas/Show';
-import { useCallback } from 'react';
-import { Link } from 'react-router-dom';
 
 export default function Home() {
     const shows = useShows();
@@ -30,7 +32,7 @@ export default function Home() {
                             </CardHeader>
                             <CardFooter>
                                 <Button className="w-full" asChild>
-                                    <Link to={`/shows/${show.$jazz.id}`}>Open</Link>
+                                    <Link to={`/shows/${show.$jazz.id}`}>{t('home.open')}</Link>
                                 </Button>
                             </CardFooter>
                         </Card>
@@ -38,10 +40,10 @@ export default function Home() {
                 ))}
             </ul>
             <Button onClick={createShow} className="mt-8">
-                Create Show
+                {t('home.createShow')}
             </Button>
             <Button asChild variant="ghost" className="mt-2 self-end">
-                <Link to="/shows">View all shows &rarr;</Link>
+                <Link to="/shows">{t('home.viewAllShows')}</Link>
             </Button>
         </div>
     );

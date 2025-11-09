@@ -1,4 +1,5 @@
 import { co } from 'jazz-tools';
+
 import { initProfile, Profile } from './Profile';
 import { initRoot, Root } from './Root';
 
