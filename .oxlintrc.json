@@ -1,5 +1,27 @@
 {
+    "ignorePatterns": ["src/components/ui"],
+    "categories": {
+        "correctness": "error",
+        "suspicious": "error",
+        "pedantic": "error",
+        "perf": "error",
+        "style": "error"
+    },
     "rules": {
-        "no-unused-expressions": "off"
+        "filename-case": "off",
+        "func-style": "off",
+        "id-length": "off",
+        "max-lines-per-function": "off",
+        "no-await-in-loop": "off",
+        "no-confusing-void-expression": "off",
+        "no-magic-numbers": "off",
+        "no-misused-promises": "off",
+        "no-ternary": "off",
+        "no-unsafe-type-assertion": "off",
+        "no-unused-expressions": "off",
+        "prefer-query-selector": "off",
+        "sort-keys": "off",
+        "strict-boolean-expressions": "off",
+        "typescript/no-explicit-any": "error"
     }
 }

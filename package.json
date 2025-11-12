@@ -3,6 +3,7 @@
     "type": "module",
     "repository": "github:noeldemartin/shows-tracker-jazz",
     "scripts": {
+        "e2e": "playwright test --ui",
         "build": "tsc -b && vite build",
         "deploy": "noeldemartin-deploy-app",
         "dev": "vite",
@@ -12,6 +13,7 @@
     },
     "dependencies": {
         "@noeldemartin/utils": "next",
+        "@radix-ui/react-select": "^2.2.6",
         "@radix-ui/react-separator": "^1.1.8",
         "@radix-ui/react-slot": "^1.2.4",
         "class-variance-authority": "^0.7.1",
@@ -28,6 +30,7 @@
     "devDependencies": {
         "@modyfi/vite-plugin-yaml": "^1.1.1",
         "@noeldemartin/scripts": "next",
+        "@playwright/test": "^1.56.1",
         "@tailwindcss/vite": "^4.1.17",
         "@types/node": "^24.6.0",
         "@types/react": "^19.1.16",

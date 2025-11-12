@@ -1,9 +1,9 @@
-import { createBrowserRouter } from 'react-router-dom';
-
 import AppLayout from '@/components/layout/AppLayout';
 import Home from '@/pages/Home';
-import Show, { loadShow, ShowNotFound } from '@/pages/Show';
+import Show from '@/pages/Show';
 import Shows from '@/pages/Shows';
+import ShowsCreate from '@/pages/ShowsCreate';
+import { createBrowserRouter } from 'react-router-dom';
 
 export const router = createBrowserRouter(
     [
@@ -13,7 +13,8 @@ export const router = createBrowserRouter(
             children: [
                 { path: '/', Component: Home },
                 { path: '/shows', Component: Shows },
-                { path: '/shows/:id', Component: Show, ErrorBoundary: ShowNotFound, loader: loadShow },
+                { path: '/shows/create', Component: ShowsCreate },
+                { path: '/shows/:id', Component: Show },
             ],
         },
     ],

@@ -1,6 +1,5 @@
-import i18n from 'i18next';
-
 import en from './en.yaml';
+import i18n from 'i18next';
 
 export async function initLang() {
     await i18n.init({

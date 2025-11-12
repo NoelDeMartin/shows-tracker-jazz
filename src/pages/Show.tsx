@@ -1,32 +1,23 @@
+import { Show as CoShow } from '@/schemas/Show';
 import { t } from 'i18next';
-import { useLoaderData, useRouteError, type LoaderFunctionArgs } from 'react-router-dom';
-
-import { NotFound } from '@/lib/errors/NotFound';
-import { getLoadedAccount } from '@/lib/jazz';
-
-export async function loadShow({ params }: LoaderFunctionArgs) {
-    const shows = await getLoadedAccount({ root: { shows: { $each: true } } });
-    const show = shows.root.shows.find((show) => show.$jazz.id === params.id);
-
-    if (!show) {
-        throw new NotFound();
-    }
-
-    return { show };
-}
+import { useCoState } from 'jazz-tools/react-core';
+import { useParams } from 'react-router-dom';
 
 export function ShowNotFound() {
-    const error = useRouteError();
-
     return (
         <div className="max-w-content mx-auto">
-            <h1>{error instanceof NotFound ? t('show.notFound') : t('show.unknownError')}</h1>
+            <h1>{t('show.notFound')}</h1>
         </div>
     );
 }
 
 export default function Show() {
-    const { show } = useLoaderData<Awaited<ReturnType<typeof loadShow>>>();
+    const { id } = useParams();
+    const show = useCoState(CoShow, id, { resolve: true });
+
+    if (!show.$isLoaded) {
+        return <ShowNotFound />;
+    }
 
     return (
         <div className="max-w-content mx-auto">

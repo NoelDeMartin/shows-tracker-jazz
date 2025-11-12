@@ -8,6 +8,11 @@ home:
 
 shows:
     title: Shows
+    status:
+        planned: Planned
+        watching: Watching
+        completed: Completed
+        dropped: Dropped
 
 show:
     notFound: '404: Show Not Found'

@@ -1,12 +1,15 @@
+import { Profile, initProfile } from './Profile';
+import { Root, initRoot } from './Root';
 import { co } from 'jazz-tools';
-
-import { initProfile, Profile } from './Profile';
-import { initRoot, Root } from './Root';
 
 export const Account = co
     .account({
-        profile: Profile,
-        root: Root,
+        get profile() {
+            return Profile;
+        },
+        get root() {
+            return Root;
+        },
     })
     .withMigration((account) => {
         account.$jazz.has('root') || account.$jazz.set('root', initRoot());

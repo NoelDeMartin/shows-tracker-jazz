@@ -1,9 +1,7 @@
+import { Account } from '@/schemas/Account';
+import { Show } from './Show';
 import { co } from 'jazz-tools';
 import { useAccount } from 'jazz-tools/react-core';
-
-import { Account } from '@/schemas/Account';
-
-import { Show } from './Show';
 
 export function initRoot() {
     return {
@@ -17,7 +15,7 @@ export function useShows() {
     const account = useAccount(Account, { resolve: { root: { shows: { $each: true } } } });
 
     if (!account.$isLoaded) {
-        return null;
+        return;
     }
 
     return account.root.shows;
