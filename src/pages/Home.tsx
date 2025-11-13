@@ -1,8 +1,9 @@
-import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { t } from 'i18next';
-import { useMemo } from 'react';
+
+import { Button } from '@/components/ui/button';
+import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useShows } from '@/schemas/Root';
 
 export default function Home() {

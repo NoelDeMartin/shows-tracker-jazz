@@ -11,6 +11,7 @@
         "filename-case": "off",
         "func-style": "off",
         "id-length": "off",
+        "max-lines": "off",
         "max-lines-per-function": "off",
         "no-await-in-loop": "off",
         "no-confusing-void-expression": "off",
@@ -20,6 +21,7 @@
         "no-unsafe-type-assertion": "off",
         "no-unused-expressions": "off",
         "prefer-query-selector": "off",
+        "sort-imports": "off",
         "sort-keys": "off",
         "strict-boolean-expressions": "off",
         "typescript/no-explicit-any": "error"

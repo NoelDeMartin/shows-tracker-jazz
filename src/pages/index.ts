@@ -1,9 +1,10 @@
+import { createBrowserRouter } from 'react-router-dom';
+
 import AppLayout from '@/components/layout/AppLayout';
 import Home from '@/pages/Home';
 import Show from '@/pages/Show';
 import Shows from '@/pages/Shows';
 import ShowsCreate from '@/pages/ShowsCreate';
-import { createBrowserRouter } from 'react-router-dom';
 
 export const router = createBrowserRouter(
     [

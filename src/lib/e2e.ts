@@ -1,8 +1,9 @@
+import { after } from '@noeldemartin/utils';
+
 import { Account } from '@/schemas/Account';
 import { Profile } from '@/schemas/Profile';
 import { Root } from '@/schemas/Root';
 import { Show } from '@/schemas/Show';
-import { after } from '@noeldemartin/utils';
 
 function e2e() {
     return {

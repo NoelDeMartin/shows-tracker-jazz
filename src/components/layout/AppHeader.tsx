@@ -1,7 +1,8 @@
-import { LucideSearch, LucideSettings } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { t } from 'i18next';
+import { LucideSearch, LucideSettings } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
 
 export default function AppHeader() {
     return (

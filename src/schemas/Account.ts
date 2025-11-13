@@ -1,6 +1,7 @@
+import { co } from 'jazz-tools';
+
 import { Profile, initProfile } from './Profile';
 import { Root, initRoot } from './Root';
-import { co } from 'jazz-tools';
 
 export const Account = co
     .account({

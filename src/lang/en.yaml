@@ -17,3 +17,30 @@ shows:
 show:
     notFound: '404: Show Not Found'
     unknownError: Unknown error
+    delete: Delete Show {{title}}
+
+seasons:
+    title: Seasons
+    add: Add Season
+    remove: Remove Season {{seasonNumber}}
+    label: Season {{number}}
+    empty: No episodes yet. Add one to get started.
+
+episodes:
+    add: Add Episode
+    remove: Remove Season {{seasonNumber}} Episode {{episodeNumber}}
+    label: Episode {{number}}
+
+forms:
+    title: Title
+    description: Description
+    startDate: Start Date
+    endDate: End Date
+    releaseDate: Release Date
+    status: Status
+    cancel: Cancel
+    createShow: Create Show
+    titlePlaceholder: Enter show title
+    descriptionPlaceholder: Enter show description
+    episodeTitlePlaceholder: Episode title
+    episodeDescriptionPlaceholder: Episode description

@@ -1,7 +1,8 @@
-import { Show as CoShow } from '@/schemas/Show';
+import { useParams } from 'react-router-dom';
 import { t } from 'i18next';
 import { useCoState } from 'jazz-tools/react-core';
-import { useParams } from 'react-router-dom';
+
+import { Show as CoShow } from '@/schemas/Show';
 
 export function ShowNotFound() {
     return (

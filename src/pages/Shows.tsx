@@ -1,13 +1,14 @@
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle2, Clock, type LucideIcon, Play, Trash2, XCircle } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { Show } from '@/schemas/Show';
-import { cn } from '@/lib/shadcn';
 import { t } from 'i18next';
+import { CheckCircle2, Clock, type LucideIcon, Play, Trash2, XCircle } from 'lucide-react';
 import { useCoState } from 'jazz-tools/react-core';
+
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { cn } from '@/lib/shadcn';
 import { useShows } from '@/schemas/Root';
+import { Show } from '@/schemas/Show';
 
 type ShowStatus = 'planned' | 'watching' | 'completed' | 'dropped';
 
@@ -41,7 +42,14 @@ function ShowCard({ showId, title, onDelete }: { showId: string; title: string; 
                 <div className="flex items-center gap-2">
                     <StatusIcon className={cn('size-5', statusColor)} />
                     <CardTitle className="flex-1">{title}</CardTitle>
-                    <Button type="button" variant="ghost" size="icon" onClick={onDelete} className="ml-auto">
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={onDelete}
+                        className="ml-auto"
+                        aria-label={t('show.delete', { title })}
+                    >
                         <Trash2 className="text-destructive size-4" />
                     </Button>
                 </div>
