@@ -4,7 +4,7 @@
     "repository": "github:noeldemartin/shows-tracker-jazz",
     "scripts": {
         "e2e": "playwright test --ui",
-        "build": "tsc -b && vite build",
+        "build": "tsc -b tsconfig.app.json && vite build",
         "deploy": "noeldemartin-deploy-app",
         "dev": "vite",
         "lint": "pnpm run lint:oxlint && pnpm run lint:prettier",
