@@ -7,7 +7,6 @@ export default defineConfig({
     timeout: 10_000,
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : 0,
-    workers: process.env.CI ? 1 : undefined,
     reporter: process.env.CI ? 'list' : 'html',
     use: {
         baseURL: 'http://localhost:5173',

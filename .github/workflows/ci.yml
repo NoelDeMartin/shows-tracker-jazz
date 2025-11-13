@@ -20,6 +20,9 @@ jobs:
             - run: npm run lint
     e2e:
         runs-on: ubuntu-latest
+        container:
+            image: mcr.microsoft.com/playwright:v1.56.1-noble
+            options: --user 1001
         steps:
             - uses: actions/checkout@v4
             - uses: pnpm/action-setup@v4
@@ -32,7 +35,6 @@ jobs:
                   cache: 'pnpm'
             - run: cp .env.example .env
             - run: pnpm install
-            - run: pnpm exec playwright install --with-deps
             - run: pnpm exec playwright test
             - uses: actions/upload-artifact@v4
               if: ${{ !cancelled() && failure() }}
