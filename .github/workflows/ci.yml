@@ -62,4 +62,4 @@ jobs:
                   cache: 'pnpm'
             - run: cp .env.development .env
             - run: pnpm install
-            - run: pnpm deploy
+            - run: pnpm run deploy
