@@ -1,5 +1,10 @@
 header:
     title: Shows Tracker
+    settings: Settings
+    login: Log In
+    loginTitle: Log In
+    loginDescription: Enter your credentials to access your account.
+    logout: Log Out
 
 home:
     open: Open
@@ -44,3 +49,11 @@ forms:
     descriptionPlaceholder: Enter show description
     episodeTitlePlaceholder: Episode title
     episodeDescriptionPlaceholder: Episode description
+
+login:
+    email: Email
+    password: Password
+    emailPlaceholder: Enter your email
+    passwordPlaceholder: Enter your password
+    submit: Log In
+    test: Log In to Test Server

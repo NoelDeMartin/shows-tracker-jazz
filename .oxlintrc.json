@@ -17,6 +17,7 @@
         "no-confusing-void-expression": "off",
         "no-magic-numbers": "off",
         "no-misused-promises": "off",
+        "no-nested-ternary": "off",
         "no-ternary": "off",
         "no-unsafe-type-assertion": "off",
         "no-unused-expressions": "off",

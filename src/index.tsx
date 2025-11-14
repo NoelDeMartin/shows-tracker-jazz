@@ -4,8 +4,10 @@ import { RouterProvider } from 'react-router-dom';
 import { required } from '@noeldemartin/utils';
 import { JazzInspector } from 'jazz-tools/inspector';
 import { JazzReactProvider } from 'jazz-tools/react';
+import { AuthProvider } from 'jazz-tools/better-auth/auth/react';
 
 import { Account } from '@/schemas/Account';
+import { betterAuthClient } from '@/lib/auth';
 import { initE2E } from '@/lib/e2e';
 import { initLang } from '@/lang';
 import { router } from '@/pages';
@@ -23,8 +25,10 @@ Promise.all([initLang(), initE2E()]).then(() => {
                 }}
                 AccountSchema={Account}
             >
-                <RouterProvider router={router} />
-                {import.meta.env.DEV && <JazzInspector />}
+                <AuthProvider betterAuthClient={betterAuthClient}>
+                    <RouterProvider router={router} />
+                    {import.meta.env.DEV && <JazzInspector />}
+                </AuthProvider>
             </JazzReactProvider>
         </StrictMode>,
     );

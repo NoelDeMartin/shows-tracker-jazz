@@ -4,4 +4,10 @@ export function initProfile() {
     return { name: 'Anonymous' };
 }
 
-export const Profile = co.profile();
+export const Profile = co
+    .profile({
+        avatar: co.image().optional(),
+    })
+    .withMigration((profile) => {
+        profile.$jazz.has('name') || profile.$jazz.set('name', 'Anonymous');
+    });
