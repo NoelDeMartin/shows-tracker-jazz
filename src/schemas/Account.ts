@@ -1,7 +1,8 @@
 import { co } from 'jazz-tools';
 
-import { Profile, initProfile } from './Profile';
-import { Root, initRoot } from './Root';
+import { Profile } from './Profile';
+import { Root } from './Root';
+import { initializeSchema } from '@/lib/jazz';
 
 export const Account = co
     .account({
@@ -13,6 +14,6 @@ export const Account = co
         },
     })
     .withMigration((account) => {
-        account.$jazz.has('root') || account.$jazz.set('root', initRoot());
-        account.$jazz.has('profile') || account.$jazz.set('profile', initProfile());
+        account.$jazz.has('root') || account.$jazz.set('root', initializeSchema<typeof Root>());
+        account.$jazz.has('profile') || account.$jazz.set('profile', initializeSchema<typeof Profile>());
     });
