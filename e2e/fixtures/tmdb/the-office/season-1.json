@@ -1,0 +1,28 @@
+{
+    "id": 201,
+    "name": "Season 1",
+    "season_number": 1,
+    "episode_count": 6,
+    "overview": "The first season",
+    "air_date": "2005-03-24",
+    "episodes": [
+        {
+            "id": 2001,
+            "name": "Pilot",
+            "episode_number": 1,
+            "season_number": 1,
+            "overview": "The first episode",
+            "air_date": "2005-03-24",
+            "runtime": 22
+        },
+        {
+            "id": 2002,
+            "name": "Diversity Day",
+            "episode_number": 2,
+            "season_number": 1,
+            "overview": "The second episode",
+            "air_date": "2005-03-29",
+            "runtime": 22
+        }
+    ]
+}

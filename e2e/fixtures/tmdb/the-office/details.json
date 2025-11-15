@@ -1,0 +1,21 @@
+{
+    "id": 2,
+    "name": "The Office",
+    "overview": "A mockumentary sitcom",
+    "first_air_date": "2005-03-24",
+    "poster_path": "/poster2.jpg",
+    "number_of_seasons": 9,
+    "number_of_episodes": 201,
+    "vote_average": 8.9,
+    "status": "Ended",
+    "seasons": [
+        {
+            "id": 201,
+            "name": "Season 1",
+            "season_number": 1,
+            "episode_count": 6,
+            "overview": "The first season",
+            "air_date": "2005-03-24"
+        }
+    ]
+}

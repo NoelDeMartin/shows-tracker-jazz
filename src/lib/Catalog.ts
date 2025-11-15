@@ -1,3 +1,4 @@
+import z from 'zod';
 import { facade, tap } from '@noeldemartin/utils';
 import type { co } from 'jazz-tools';
 
@@ -8,13 +9,48 @@ import { Season } from '@/schemas/Season';
 import { Show } from '@/schemas/Show';
 import type { TMDBShow, TMDBShowDetails, TMDBShowExternalIds } from '@/lib/TMDB';
 
+export const TVISOShowSchema = z.object({
+    title: z.string(),
+    imdb: z.string().nullable().optional(),
+    type: z.number().min(1).max(4), // 1 = TV show, 2 = movie, 3 = documentary, 4 = other
+    rating: z.number().nullable().optional(),
+    status: z.string(),
+    checkedDate: z.string(),
+});
+
+export type TVISOShow = z.infer<typeof TVISOShowSchema>;
+
+export interface ImportResult {
+    imported: { title: string }[];
+    skipped: { title: string; reason: string }[];
+    failed: { title: string; reason: string }[];
+}
+
+export interface ImportProgress {
+    processed: number;
+    total: number;
+}
+
+const TVISO_STATUS_MAP: Record<string, 'planned' | 'watching' | 'completed' | 'dropped'> = {
+    watching: 'watching',
+    following: 'watching',
+    completed: 'completed',
+    watched: 'completed',
+    dropped: 'dropped',
+};
+
 export class CatalogService {
     async addShow(tmdbShow: TMDBShow): Promise<void> {
         const account = Account.getMe();
         const { root } = await account.$jazz.ensureLoaded({ resolve: { root: { shows: { $each: true } } } });
         const details = await TMDB.getShowDetails(tmdbShow.id);
         const externalIds = await TMDB.getShowExternalIds(tmdbShow.id);
-        const show = Show.create({ title: tmdbShow.name, status: 'planned', seasons: [] });
+        const show = Show.create({
+            title: tmdbShow.name,
+            status: 'planned',
+            seasons: [],
+            externalIds: {},
+        });
 
         await this.updateShow(show, details, externalIds);
 
@@ -26,14 +62,15 @@ export class CatalogService {
         details: TMDBShowDetails,
         externalIds?: TMDBShowExternalIds,
     ): Promise<void> {
-        const externalUrls = [TMDB.showUrl(details)];
-
-        if (externalIds?.imdb_id) {
-            externalUrls.push(`https://www.imdb.com/title/${externalIds.imdb_id}`);
-        }
-
         show.$jazz.set('title', details.name);
         show.$jazz.set('description', details.overview || '');
+
+        if (externalIds) {
+            show.$jazz.set('externalIds', {
+                imdb: externalIds.imdb_id ?? undefined,
+                tmdb: details.id,
+            });
+        }
 
         if (details.poster_path) {
             show.$jazz.set('posterPath', details.poster_path);
@@ -91,6 +128,105 @@ export class CatalogService {
                 }
             }
         }
+    }
+
+    async importFromTViso(data: TVISOShow[], onProgress?: (progress: ImportProgress) => void): Promise<ImportResult> {
+        const account = Account.getMe();
+        const { root } = await account.$jazz.ensureLoaded({ resolve: { root: { shows: { $each: true } } } });
+
+        const result: ImportResult = {
+            imported: [],
+            skipped: [],
+            failed: [],
+        };
+
+        const total = data.length;
+
+        for (const [index, item] of data.entries()) {
+            try {
+                // Call progress callback if provided
+                if (onProgress) {
+                    onProgress({ processed: index + 1, total });
+                }
+
+                const show = TVISOShowSchema.parse(item);
+
+                // Skip non-TV shows (type 1 = TV show)
+                if (show.type !== 1) {
+                    result.skipped.push({
+                        title: show.title,
+                        reason: 'Not a TV show',
+                    });
+
+                    continue;
+                }
+
+                // Search for the show on TMDB
+                const searchResults = await TMDB.searchShows(show.title, show.imdb || undefined);
+
+                if (!searchResults || searchResults.length === 0) {
+                    result.failed.push({
+                        title: show.title,
+                        reason: 'Not found on TMDB',
+                    });
+                    continue;
+                }
+
+                // Get the first result (best match)
+                const [tmdbShow] = searchResults;
+
+                // Get detailed show information
+                const showDetails = await TMDB.getShowDetails(tmdbShow.id);
+                const externalIds = await TMDB.getShowExternalIds(tmdbShow.id);
+
+                // Check if show already exists in catalog by TMDB ID or IMDB ID
+                const existingShow = root.shows.find((s) => {
+                    if (s.externalIds?.tmdb === tmdbShow.id) {
+                        return true;
+                    }
+
+                    if (externalIds?.imdb_id && s.externalIds?.imdb === externalIds.imdb_id) {
+                        return true;
+                    }
+
+                    return false;
+                });
+
+                if (existingShow) {
+                    result.skipped.push({
+                        title: show.title,
+                        reason: 'Already in catalog',
+                    });
+
+                    continue;
+                }
+
+                // Create new show
+                const newShow = Show.create({
+                    title: showDetails.name,
+                    status: TVISO_STATUS_MAP[show.status.toLowerCase()] ?? 'planned',
+                    seasons: [],
+                    externalIds: {},
+                });
+
+                await this.updateShow(newShow, showDetails, externalIds);
+
+                root.shows.$jazz.push(newShow);
+                result.imported.push({ title: show.title });
+            } catch (error) {
+                const title =
+                    typeof item === 'object' && item !== null && 'title' in item && typeof item.title === 'string'
+                        ? item.title
+                        : `Item ${index + 1}`;
+
+                result.failed.push({
+                    title,
+                    reason: error instanceof Error ? error.message : 'Validation or import error',
+                });
+            }
+        }
+
+        return result;
     }
 }
 

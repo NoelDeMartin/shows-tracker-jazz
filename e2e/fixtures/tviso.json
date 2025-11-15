@@ -1,0 +1,34 @@
+[
+    {
+        "title": "Breaking Bad",
+        "imdb": null,
+        "type": 1,
+        "rating": 9.5,
+        "status": "watching",
+        "checkedDate": "2023-01-01"
+    },
+    {
+        "title": "The Office",
+        "imdb": null,
+        "type": 1,
+        "rating": 8.9,
+        "status": "completed",
+        "checkedDate": "2023-02-01"
+    },
+    {
+        "title": "Inception",
+        "imdb": null,
+        "type": 2,
+        "rating": 8.8,
+        "status": "completed",
+        "checkedDate": "2023-03-01"
+    },
+    {
+        "title": "NonExistent Show",
+        "imdb": null,
+        "type": 1,
+        "rating": null,
+        "status": "planned",
+        "checkedDate": "2023-04-01"
+    }
+]

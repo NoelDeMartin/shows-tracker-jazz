@@ -111,6 +111,7 @@ export default function ShowsCreate() {
             startDate: startDate ? new Date(startDate) : undefined,
             endDate: endDate ? new Date(endDate) : undefined,
             seasons: jazzSeasons,
+            externalIds: {},
         });
         shows.$jazz.push(newShow);
 

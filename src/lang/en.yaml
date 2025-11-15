@@ -8,11 +8,12 @@ header:
 
 home:
     open: Open
-    createShow: Create Show
     viewAllShows: View all shows →
 
 shows:
     title: Shows
+    create: Create Show
+    import: Import Show
     status:
         planned: Planned
         watching: Watching
@@ -23,6 +24,25 @@ show:
     notFound: '404: Show Not Found'
     unknownError: Unknown error
     delete: Delete Show {{title}}
+
+import:
+    title: Import Show
+    description: Upload a JSON file to import TV shows from TViso format
+    selectFile: Select JSON File
+    startImport: Start Import
+    importing: Importing...
+    processingItems: Processing items {{current}} of {{total}}
+    resultsTitle: Import Results
+    importedCount: Imported ({{count}})
+    skippedCount: Skipped ({{count}})
+    failedCount: Failed ({{count}})
+    importedShows: Imported Shows
+    skippedShows: Skipped Shows
+    failedShows: Failed Shows
+    success: Successfully imported {{count}} show(s)
+    noShows: No shows were imported
+    partialSuccess: Imported {{count}} show(s) with some failures
+    error: An error occurred during import
 
 seasons:
     title: '{{count}} Seasons'

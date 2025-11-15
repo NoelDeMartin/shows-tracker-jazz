@@ -1,7 +1,7 @@
 import { t } from 'i18next';
-import { useCoState } from 'jazz-tools/react-core';
 import { CheckCircle2, Clock, Film, Play, Trash2, XCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useCoState } from 'jazz-tools/react-core';
 import type { LucideIcon } from 'lucide-react';
 
 import TMDB from '@/lib/TMDB';
@@ -123,7 +123,10 @@ export default function Shows() {
                 ))}
             </ul>
             <Button asChild className="mt-8">
-                <Link to="/shows/create">{t('home.createShow')}</Link>
+                <Link to="/shows/create">{t('shows.create')}</Link>
+            </Button>
+            <Button asChild className="mt-8">
+                <Link to="/shows/import">{t('shows.import')}</Link>
             </Button>
         </div>
     );

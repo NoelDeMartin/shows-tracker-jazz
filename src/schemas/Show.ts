@@ -10,4 +10,8 @@ export const Show = co.map({
     endDate: z.date().optional(),
     posterPath: z.string().optional(),
     seasons: co.list(Season),
+    externalIds: z.object({
+        imdb: z.string().optional(),
+        tmdb: z.number().optional(),
+    }),
 });
