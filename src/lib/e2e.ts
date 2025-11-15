@@ -4,9 +4,11 @@ import { Account } from '@/schemas/Account';
 import { Profile } from '@/schemas/Profile';
 import { Root } from '@/schemas/Root';
 import { Show } from '@/schemas/Show';
+import { waitForLocalSync } from '@/lib/jazz';
 
 function e2e() {
     return {
+        waitForLocalSync,
         jazzSchemas: { Show, Root, Account, Profile },
         async getJazzAccount() {
             for (let i = 0; i < 10; i++) {
