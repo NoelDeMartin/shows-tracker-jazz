@@ -1,0 +1,28 @@
+{
+    "id": 101,
+    "name": "Season 1",
+    "season_number": 1,
+    "episode_count": 7,
+    "overview": "The first season",
+    "air_date": "2008-01-20",
+    "episodes": [
+        {
+            "id": 1001,
+            "name": "Pilot",
+            "episode_number": 1,
+            "season_number": 1,
+            "overview": "The first episode",
+            "air_date": "2008-01-20",
+            "runtime": 58
+        },
+        {
+            "id": 1002,
+            "name": "Cat's in the Bag...",
+            "episode_number": 2,
+            "season_number": 1,
+            "overview": "The second episode",
+            "air_date": "2008-01-27",
+            "runtime": 48
+        }
+    ]
+}

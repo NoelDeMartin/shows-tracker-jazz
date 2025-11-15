@@ -1,8 +1,10 @@
-import { Link } from 'react-router-dom';
 import { t } from 'i18next';
-import { CheckCircle2, Clock, type LucideIcon, Play, Trash2, XCircle } from 'lucide-react';
 import { useCoState } from 'jazz-tools/react-core';
+import { CheckCircle2, Clock, Film, Play, Trash2, XCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import type { LucideIcon } from 'lucide-react';
 
+import TMDB from '@/lib/TMDB';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -35,9 +37,17 @@ function ShowCard({ showId, title, onDelete }: { showId: string; title: string; 
 
     const StatusIcon = statusIcons[coShow.status];
     const statusColor = statusColors[coShow.status];
+    const posterUrl = TMDB.showImageUrl({ poster_path: coShow.posterPath }, 'w500');
 
     return (
         <Card>
+            <div className="bg-muted relative flex h-48 w-full items-center justify-center overflow-hidden rounded-t-lg">
+                {posterUrl ? (
+                    <img src={posterUrl} alt={title} className="h-full w-full object-cover" />
+                ) : (
+                    <Film className="text-muted-foreground size-12 opacity-50" />
+                )}
+            </div>
             <CardHeader>
                 <div className="flex items-center gap-2">
                     <StatusIcon className={cn('size-5', statusColor)} />

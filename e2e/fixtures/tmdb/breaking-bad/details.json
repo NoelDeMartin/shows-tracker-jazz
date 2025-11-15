@@ -1,0 +1,31 @@
+{
+    "id": 1,
+    "name": "Breaking Bad",
+    "overview": "A high school chemistry teacher turned methamphetamine manufacturer",
+    "first_air_date": "2008-01-20",
+    "last_air_date": "2013-09-29",
+    "poster_path": "/poster1.jpg",
+    "backdrop_path": "/backdrop1.jpg",
+    "number_of_seasons": 5,
+    "number_of_episodes": 62,
+    "vote_average": 9.5,
+    "status": "Ended",
+    "seasons": [
+        {
+            "id": 101,
+            "name": "Season 1",
+            "season_number": 1,
+            "episode_count": 7,
+            "overview": "The first season",
+            "air_date": "2008-01-20"
+        },
+        {
+            "id": 102,
+            "name": "Season 2",
+            "season_number": 2,
+            "episode_count": 13,
+            "overview": "The second season",
+            "air_date": "2009-03-08"
+        }
+    ]
+}

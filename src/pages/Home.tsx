@@ -1,7 +1,9 @@
+import { t } from 'i18next';
+import { Film } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { t } from 'i18next';
 
+import TMDB from '@/lib/TMDB';
 import { Button } from '@/components/ui/button';
 import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useShows } from '@/schemas/Root';
@@ -17,20 +19,31 @@ export default function Home() {
     return (
         <div className="max-w-content mx-auto flex flex-col pb-8">
             <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                {activeShows.map((show) => (
-                    <li key={show.$jazz.id}>
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>{show.title}</CardTitle>
-                            </CardHeader>
-                            <CardFooter>
-                                <Button className="w-full" asChild>
-                                    <Link to={`/shows/${show.$jazz.id}`}>{t('home.open')}</Link>
-                                </Button>
-                            </CardFooter>
-                        </Card>
-                    </li>
-                ))}
+                {activeShows.map((show) => {
+                    const posterUrl = TMDB.showImageUrl({ poster_path: show.posterPath }, 'w500');
+
+                    return (
+                        <li key={show.$jazz.id}>
+                            <Card>
+                                <div className="bg-muted relative flex h-48 w-full items-center justify-center overflow-hidden rounded-t-lg">
+                                    {posterUrl ? (
+                                        <img src={posterUrl} alt={show.title} className="h-full w-full object-cover" />
+                                    ) : (
+                                        <Film className="text-muted-foreground size-12 opacity-50" />
+                                    )}
+                                </div>
+                                <CardHeader>
+                                    <CardTitle>{show.title}</CardTitle>
+                                </CardHeader>
+                                <CardFooter>
+                                    <Button className="w-full" asChild>
+                                        <Link to={`/shows/${show.$jazz.id}`}>{t('home.open')}</Link>
+                                    </Button>
+                                </CardFooter>
+                            </Card>
+                        </li>
+                    );
+                })}
             </ul>
             <Button asChild variant="ghost" className="mt-2 self-end">
                 <Link to="/shows">{t('home.viewAllShows')}</Link>

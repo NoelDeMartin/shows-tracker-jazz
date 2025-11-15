@@ -1,4 +1,5 @@
-import { useEffect, type DependencyList } from 'react';
+import { useEffect } from 'react';
+import type { DependencyList } from 'react';
 
 export interface EffectContext {
     isMounted: boolean;

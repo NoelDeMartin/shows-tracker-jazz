@@ -1,8 +1,8 @@
 import { co } from 'jazz-tools';
 
-import { Profile } from './Profile';
-import { Root } from './Root';
 import { initializeSchema } from '@/lib/jazz';
+import { Profile } from '@/schemas/Profile';
+import { Root } from '@/schemas/Root';
 
 export const Account = co
     .account({

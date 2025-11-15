@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 
 import AppHeader from '@/components/layout/AppHeader';
+import { Toaster } from '@/components/ui/sonner';
 
 export default function AppLayout() {
     return (
@@ -9,6 +10,7 @@ export default function AppLayout() {
             <main className="flex-1">
                 <Outlet />
             </main>
+            <Toaster />
         </div>
     );
 }

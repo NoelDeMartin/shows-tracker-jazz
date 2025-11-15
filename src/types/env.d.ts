@@ -3,6 +3,7 @@
 interface ImportMetaEnv {
     readonly VITE_BETTER_AUTH_BASE_URL?: string;
     readonly VITE_JAZZ_PEER?: `wss://${string}` | `ws://${string}`;
+    readonly VITE_TMDB_API_KEY?: string;
 }
 
 interface ImportMeta {

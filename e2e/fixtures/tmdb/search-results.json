@@ -1,0 +1,24 @@
+[
+    {
+        "id": 1,
+        "name": "Breaking Bad",
+        "overview": "A high school chemistry teacher turned methamphetamine manufacturer",
+        "first_air_date": "2008-01-20",
+        "last_air_date": "2013-09-29",
+        "poster_path": "/poster1.jpg",
+        "backdrop_path": "/backdrop1.jpg",
+        "number_of_seasons": 5,
+        "number_of_episodes": 62,
+        "vote_average": 9.5
+    },
+    {
+        "id": 2,
+        "name": "The Office",
+        "overview": "A mockumentary sitcom",
+        "first_air_date": "2005-03-24",
+        "poster_path": "/poster2.jpg",
+        "number_of_seasons": 9,
+        "number_of_episodes": 201,
+        "vote_average": 8.9
+    }
+]

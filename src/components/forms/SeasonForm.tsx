@@ -4,7 +4,8 @@ import { Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-import { EpisodeForm, type EpisodeFormData } from './EpisodeForm';
+import { EpisodeForm } from './EpisodeForm';
+import type { EpisodeFormData } from './EpisodeForm';
 
 interface SeasonFormData {
     episodes: EpisodeFormData[];

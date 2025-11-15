@@ -1,10 +1,10 @@
+import { t } from 'i18next';
+import { CheckCircle2, Clock, Play, Plus, XCircle } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { t } from 'i18next';
-import { CheckCircle2, Clock, Play, Plus, XCircle, type LucideIcon } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
-import { type EpisodeFormData } from '@/components/forms/EpisodeForm';
-import { SeasonForm, type SeasonFormData } from '@/components/forms/SeasonForm';
+import { SeasonForm } from '@/components/forms/SeasonForm';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -14,6 +14,8 @@ import { Episode } from '@/schemas/Episode';
 import { Season } from '@/schemas/Season';
 import { Show } from '@/schemas/Show';
 import { useShows } from '@/schemas/Root';
+import type { EpisodeFormData } from '@/components/forms/EpisodeForm';
+import type { SeasonFormData } from '@/components/forms/SeasonForm';
 
 type ShowStatus = 'planned' | 'watching' | 'completed' | 'dropped';
 
@@ -87,18 +89,19 @@ export default function ShowsCreate() {
         }
 
         // Convert form data to Jazz schema format
-        const jazzSeasons = seasons.map((season) => {
+        const jazzSeasons = seasons.map((season, seasonIndex) => {
             const episodes = season.episodes
                 .filter((ep) => ep.title.trim()) // Only include episodes with titles
-                .map((ep) =>
+                .map((ep, episodeIndex) =>
                     Episode.create({
                         title: ep.title.trim(),
+                        number: episodeIndex + 1,
                         description: ep.description.trim() || undefined,
                         releasedAt: ep.releasedAt ? new Date(ep.releasedAt) : undefined,
                         watchedAt: undefined,
                     }),
                 );
-            return Season.create({ episodes });
+            return Season.create({ number: seasonIndex + 1, episodes });
         });
 
         const newShow = Show.create({

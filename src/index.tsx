@@ -1,10 +1,10 @@
-import { StrictMode } from 'react';
+import { AuthProvider } from 'jazz-tools/better-auth/auth/react';
 import { createRoot } from 'react-dom/client';
-import { RouterProvider } from 'react-router-dom';
-import { required } from '@noeldemartin/utils';
 import { JazzInspector } from 'jazz-tools/inspector';
 import { JazzReactProvider } from 'jazz-tools/react';
-import { AuthProvider } from 'jazz-tools/better-auth/auth/react';
+import { required } from '@noeldemartin/utils';
+import { RouterProvider } from 'react-router-dom';
+import { StrictMode } from 'react';
 
 import { Account } from '@/schemas/Account';
 import { betterAuthClient } from '@/lib/auth';

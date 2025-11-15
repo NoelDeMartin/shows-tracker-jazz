@@ -1,0 +1,28 @@
+{
+    "id": 102,
+    "name": "Season 2",
+    "season_number": 2,
+    "episode_count": 13,
+    "overview": "The second season",
+    "air_date": "2009-03-08",
+    "episodes": [
+        {
+            "id": 2001,
+            "name": "Seven Thirty-Seven",
+            "episode_number": 1,
+            "season_number": 2,
+            "overview": "The second season premiere",
+            "air_date": "2009-03-08",
+            "runtime": 47
+        },
+        {
+            "id": 2002,
+            "name": "Grilled",
+            "episode_number": 2,
+            "season_number": 2,
+            "overview": "The second episode of season 2",
+            "air_date": "2009-03-15",
+            "runtime": 48
+        }
+    ]
+}

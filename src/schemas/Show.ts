@@ -8,5 +8,6 @@ export const Show = co.map({
     status: z.enum(['planned', 'watching', 'completed', 'dropped']),
     startDate: z.date().optional(),
     endDate: z.date().optional(),
+    posterPath: z.string().optional(),
     seasons: co.list(Season),
 });
