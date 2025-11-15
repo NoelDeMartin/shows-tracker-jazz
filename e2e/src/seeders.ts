@@ -14,5 +14,5 @@ export async function createShow(
     }, attributes as any); // oxlint-disable-line no-explicit-any
 
     // Some browsers (webkit) need some delays to make sure that the show has been created.
-    await after({ ms: 100 });
+    await after({ ms: 500 });
 }
