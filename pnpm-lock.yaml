@@ -123,6 +123,9 @@ importers:
       vite:
         specifier: npm:rolldown-vite@7.1.14
         version: rolldown-vite@7.1.14(@types/node@24.10.0)(jiti@2.6.1)
+      vite-plugin-spa-redirect:
+        specifier: next
+        version: 0.0.0-next.b7774dfc11bece2669e08dbdc6151ab7a387a999(rolldown-vite@7.1.14(@types/node@24.10.0)(jiti@2.6.1))
 
 packages:
 
@@ -2808,6 +2811,11 @@ packages:
     resolution: {integrity: sha512-OljLrQ9SQdOUqTaQxqL5dEfZWrXExyyWsozYlAWFawPVNuD83igl7uJD2RTkNMbniIYgt8l81eCJGIdQF7avLQ==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
+  vite-plugin-spa-redirect@0.0.0-next.b7774dfc11bece2669e08dbdc6151ab7a387a999:
+    resolution: {integrity: sha512-sawB4QpKQdcDunY+BgCqS7cifYOmSDvxwmpzYTx9efP2yGdWZ+2oG5hMY03C11/ABYrt3DFl4e47RigBz2giVQ==}
+    peerDependencies:
+      vite: '*'
+
   vue-eslint-parser@9.4.3:
     resolution: {integrity: sha512-2rYRLWlIpaiN8xbPiDyXZXRgLGOtWxERV7ND5fFAv5qo1D2N9Fu9MNajBNc6o13lZ+24DAWCkQCvj4klgmcITg==}
     engines: {node: ^14.17.0 || >=16.0.0}
@@ -5447,6 +5455,10 @@ snapshots:
       react: 19.2.0
 
   validate-npm-package-name@5.0.1: {}
+
+  vite-plugin-spa-redirect@0.0.0-next.b7774dfc11bece2669e08dbdc6151ab7a387a999(rolldown-vite@7.1.14(@types/node@24.10.0)(jiti@2.6.1)):
+    dependencies:
+      vite: rolldown-vite@7.1.14(@types/node@24.10.0)(jiti@2.6.1)
 
   vue-eslint-parser@9.4.3(eslint@8.57.1):
     dependencies:
