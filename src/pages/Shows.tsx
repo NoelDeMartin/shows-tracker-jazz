@@ -1,6 +1,6 @@
-import { t } from 'i18next';
 import { CheckCircle2, Clock, Film, Play, Trash2, XCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { t } from 'i18next';
 import { useCoState } from 'jazz-tools/react-core';
 import type { LucideIcon } from 'lucide-react';
 
@@ -8,9 +8,9 @@ import TMDB from '@/lib/TMDB';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Show } from '@/schemas/Show';
 import { cn } from '@/lib/shadcn';
 import { useShows } from '@/schemas/Root';
-import { Show } from '@/schemas/Show';
 
 type ShowStatus = 'planned' | 'watching' | 'completed' | 'dropped';
 
@@ -32,7 +32,7 @@ function ShowCard({ showId, title, onDelete }: { showId: string; title: string; 
     const coShow = useCoState(Show, showId);
 
     if (!coShow.$isLoaded) {
-        return;
+        return <></>;
     }
 
     const StatusIcon = statusIcons[coShow.status];
