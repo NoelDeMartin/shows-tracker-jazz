@@ -45,7 +45,8 @@ import:
     error: An error occurred during import
 
 seasons:
-    title: '{{count}} Seasons'
+    title: Seasons
+    titleWithCount: '{{count}} Seasons'
     add: Add Season
     remove: Remove Season {{seasonNumber}}
     label: Season {{number}}

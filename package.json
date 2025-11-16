@@ -7,9 +7,10 @@
         "build": "tsc -b tsconfig.app.json && vite build",
         "deploy": "noeldemartin-deploy-app",
         "dev": "vite",
-        "lint": "pnpm run lint:oxlint && pnpm run lint:prettier",
+        "lint": "pnpm run lint:oxlint && pnpm run lint:prettier && pnpm run lint:typescript",
         "lint:oxlint": "oxlint --type-aware",
-        "lint:prettier": "prettier . --check"
+        "lint:prettier": "prettier . --check",
+        "lint:typescript": "tsc -b --noEmit tsconfig.app.json tsconfig.e2e.json tsconfig.node.json"
     },
     "dependencies": {
         "@noeldemartin/utils": "next",

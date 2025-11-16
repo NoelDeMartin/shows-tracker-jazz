@@ -20,7 +20,7 @@ test('adds show to collection from search results', async ({ page }) => {
 
     await expect(page.getByPlaceholder('Search TV shows...')).not.toBeVisible();
 
-    await page.goto('/shows');
+    await page.getByRole('link', { name: 'View all shows' }).click();
     await expect(page.getByText('Breaking Bad')).toBeVisible();
 });
 
@@ -47,6 +47,6 @@ test('adds show to collection from details dialog', async ({ page }) => {
 
     await expect(page.getByPlaceholder('Search TV shows...')).not.toBeVisible();
 
-    await page.goto('/shows');
+    await page.getByRole('link', { name: 'View all shows' }).click();
     await expect(page.getByText('Breaking Bad')).toBeVisible();
 });

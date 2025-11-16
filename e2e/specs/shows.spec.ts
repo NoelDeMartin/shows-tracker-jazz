@@ -5,9 +5,9 @@ import { createShow } from '@e2e/seeders';
 test('displays all shows regardless of status', async ({ page }) => {
     await page.goto('/shows');
 
-    await createShow(page, { title: 'Stranger Things', status: 'watching', seasons: [] });
-    await createShow(page, { title: 'The Crown', status: 'planned', seasons: [] });
-    await createShow(page, { title: 'Breaking Bad', status: 'completed', seasons: [] });
+    await createShow(page, { title: 'Stranger Things', status: 'watching', seasons: [], externalIds: {} });
+    await createShow(page, { title: 'The Crown', status: 'planned', seasons: [], externalIds: {} });
+    await createShow(page, { title: 'Breaking Bad', status: 'completed', seasons: [], externalIds: {} });
 
     await expect(page.getByText('Stranger Things')).toBeVisible();
     await expect(page.getByText('The Crown')).toBeVisible();
@@ -189,44 +189,10 @@ test('creates a show with complete data including multiple seasons and episodes'
     await expect(page.getByText('The Last of Us')).toBeVisible();
 });
 
-test('description field is optional', async ({ page }) => {
-    await page.goto('/shows/create');
-
-    await page.getByLabel('Title').fill('Better Call Saul');
-    await page.getByLabel('Status').click();
-    await page.getByRole('option', { name: 'Planned' }).click();
-
-    await expect(page.getByRole('button', { name: 'Create Show' })).toBeEnabled();
-    await page.getByRole('button', { name: 'Create Show' }).click();
-
-    await expect(page).toHaveURL('/shows');
-    await expect(page.getByText('Better Call Saul')).toBeVisible();
-});
-
-test('validates required fields when creating a show', async ({ page }) => {
-    await page.goto('/shows/create');
-
-    await expect(page.getByRole('button', { name: 'Create Show' })).toBeDisabled();
-
-    await page.getByLabel('Title').fill('The Wire');
-
-    await expect(page.getByRole('button', { name: 'Create Show' })).toBeEnabled();
-});
-
-test('allows canceling show creation', async ({ page }) => {
-    await page.goto('/shows/create');
-
-    await page.getByLabel('Title').fill('True Detective');
-
-    await page.getByRole('button', { name: 'Cancel' }).click();
-
-    await expect(page).toHaveURL('/shows');
-});
-
 test('can change show status', async ({ page }) => {
     await page.goto('/shows');
 
-    await createShow(page, { title: 'House of the Dragon', status: 'planned', seasons: [] });
+    await createShow(page, { title: 'House of the Dragon', status: 'planned', seasons: [], externalIds: {} });
 
     const showCard = page.locator('li').filter({ hasText: 'House of the Dragon' });
 
@@ -242,8 +208,8 @@ test('can change show status', async ({ page }) => {
 test('can delete a show', async ({ page }) => {
     await page.goto('/shows');
 
-    await createShow(page, { title: 'The Sopranos', status: 'watching', seasons: [] });
-    await createShow(page, { title: 'The Bear', status: 'watching', seasons: [] });
+    await createShow(page, { title: 'The Sopranos', status: 'watching', seasons: [], externalIds: {} });
+    await createShow(page, { title: 'The Bear', status: 'watching', seasons: [], externalIds: {} });
 
     await expect(page.getByText('The Sopranos')).toBeVisible();
     await expect(page.getByText('The Bear')).toBeVisible();

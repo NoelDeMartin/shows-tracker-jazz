@@ -1,19 +1,20 @@
 import { t } from 'i18next';
 import { CheckCircle2, Clock, Play, Plus, XCircle } from 'lucide-react';
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
 
-import { SeasonForm } from '@/components/forms/SeasonForm';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/shadcn';
 import { Episode } from '@/schemas/Episode';
+import { Input } from '@/components/ui/input';
 import { Season } from '@/schemas/Season';
+import { SeasonForm } from '@/components/forms/SeasonForm';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Show } from '@/schemas/Show';
+import { Textarea } from '@/components/ui/textarea';
 import { useShows } from '@/schemas/Root';
+import { waitForLocalSync } from '@/lib/jazz';
 import type { EpisodeFormData } from '@/components/forms/EpisodeForm';
 import type { SeasonFormData } from '@/components/forms/SeasonForm';
 
@@ -113,8 +114,10 @@ export default function ShowsCreate() {
             seasons: jazzSeasons,
             externalIds: {},
         });
+
         shows.$jazz.push(newShow);
 
+        await waitForLocalSync();
         await navigate('/shows');
     };
 

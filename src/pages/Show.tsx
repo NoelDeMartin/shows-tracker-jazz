@@ -1,6 +1,6 @@
 import { t } from 'i18next';
+import { CheckCircle2, Clock, ChevronDown, Film, Play, XCircle } from 'lucide-react';
 import { useCoState } from 'jazz-tools/react-core';
-import { CheckCircle2, ChevronDown, Clock, Film, Play, XCircle } from 'lucide-react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
@@ -144,7 +144,9 @@ export default function Show() {
             {/* Seasons Section */}
             {show.seasons.length > 0 && (
                 <div className="space-y-4">
-                    <h2 className="text-2xl font-semibold">{t('seasons.title', { count: show.seasons.length })}</h2>
+                    <h2 className="text-2xl font-semibold">
+                        {t('seasons.titleWithCount', { count: show.seasons.length })}
+                    </h2>
                     {show.seasons.map((season) => {
                         const seasonId = season.$jazz.id;
                         const isExpanded = expandedSeasons.has(seasonId);

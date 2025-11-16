@@ -10,7 +10,8 @@ test('imports shows from TViso', async ({ page }) => {
     await page.goto('/');
     await createShow(page, { title: 'The Office', status: 'watching', seasons: [], externalIds: { tmdb: 2 } });
 
-    await page.goto('/shows/import');
+    await page.getByRole('link', { name: 'View all shows' }).click();
+    await page.getByRole('link', { name: 'Import Show' }).click();
 
     await page.locator('input[type="file"]').setInputFiles(join(process.cwd(), 'e2e/fixtures/tviso.json'));
     await page.getByRole('button', { name: 'Start Import' }).click();
@@ -30,6 +31,6 @@ test('imports shows from TViso', async ({ page }) => {
     await expect(page.getByText('Failed Shows (1)')).toBeVisible();
     await expect(page.getByText(/NonExistent Show.*Not found on TMDB/)).toBeVisible();
 
-    await page.goto('/shows');
+    await page.getByRole('button', { name: 'Cancel' }).click();
     await expect(page.getByText('Breaking Bad')).toBeVisible();
 });

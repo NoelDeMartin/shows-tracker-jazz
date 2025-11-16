@@ -1,9 +1,11 @@
 {
     "extends": "./tsconfig.json",
     "compilerOptions": {
+        "target": "ES2022",
         "module": "ESNext",
-        "types": ["node", "@playwright/test"],
-        "lib": ["ES2022", "DOM"],
+        "types": ["node", "@playwright/test", "@modyfi/vite-plugin-yaml/modules"],
+        "lib": ["ES2022", "DOM", "DOM.Iterable"],
+        "skipLibCheck": true,
 
         /* Bundler mode */
         "moduleResolution": "bundler",
@@ -11,6 +13,7 @@
         "verbatimModuleSyntax": true,
         "moduleDetection": "force",
         "noEmit": true,
+        "jsx": "react-jsx",
 
         /* Linting */
         "strict": true,
