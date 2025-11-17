@@ -1,11 +1,10 @@
 import { t } from 'i18next';
 import { CheckCircle2, Clock, Play, Plus, XCircle } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/shadcn';
 import { Episode } from '@/schemas/Episode';
 import { Input } from '@/components/ui/input';
 import { Season } from '@/schemas/Season';
@@ -13,6 +12,7 @@ import { SeasonForm } from '@/components/forms/SeasonForm';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Show } from '@/schemas/Show';
 import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/shadcn';
 import { useShows } from '@/schemas/Root';
 import { waitForLocalSync } from '@/lib/jazz';
 import type { EpisodeFormData } from '@/components/forms/EpisodeForm';
@@ -127,7 +127,7 @@ export default function ShowsCreate() {
 
     return (
         <div className="max-w-content mx-auto flex flex-col pb-8">
-            <h1 className="mb-6 text-2xl font-semibold">{t('home.createShow')}</h1>
+            <h1 className="mb-6 text-2xl font-semibold">{t('forms.createShow')}</h1>
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
                     <label htmlFor="title" className="text-sm font-medium">

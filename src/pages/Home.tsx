@@ -1,20 +1,37 @@
 import { t } from 'i18next';
-import { Film } from 'lucide-react';
-import { useMemo } from 'react';
+import { Film, RefreshCcw } from 'lucide-react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
 
+import Catalog from '@/lib/Catalog';
 import TMDB from '@/lib/TMDB';
 import { Button } from '@/components/ui/button';
 import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useShows } from '@/schemas/Root';
+import { after } from '@noeldemartin/utils';
 
 export default function Home() {
     const shows = useShows();
     const activeShows = useMemo(() => shows?.filter((show) => show.status === 'watching'), [shows]);
+    const [isUpdating, setIsUpdating] = useState(false);
 
     if (!activeShows) {
         return <></>;
     }
+
+    const handleUpdate = async () => {
+        setIsUpdating(true);
+
+        try {
+            await Promise.all([Catalog.updateShows(), after({ seconds: 1 })]);
+            toast.success(t('home.updateSuccess'));
+        } catch {
+            toast.error(t('home.updateError'));
+        } finally {
+            setIsUpdating(false);
+        }
+    };
 
     return (
         <div className="max-w-content mx-auto flex flex-col pb-8">
@@ -45,9 +62,16 @@ export default function Home() {
                     );
                 })}
             </ul>
-            <Button asChild variant="ghost" className="mt-2 self-end">
-                <Link to="/shows">{t('home.viewAllShows')}</Link>
-            </Button>
+
+            <div className="mt-4 flex justify-between">
+                <Button variant="outline" onClick={handleUpdate} disabled={isUpdating}>
+                    <RefreshCcw className={`size-4 ${isUpdating ? 'animate-spin' : ''}`} />
+                    {t('home.update')}
+                </Button>
+                <Button asChild variant="ghost">
+                    <Link to="/shows">{t('home.viewAllShows')}</Link>
+                </Button>
+            </div>
         </div>
     );
 }

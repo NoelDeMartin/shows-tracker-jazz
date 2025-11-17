@@ -34,3 +34,26 @@ test('imports shows from TViso', async ({ page }) => {
     await page.getByRole('button', { name: 'Cancel' }).click();
     await expect(page.getByText('Breaking Bad')).toBeVisible();
 });
+
+test('updates shows from TMDB', async ({ page }) => {
+    setupTMDBMocks(page);
+
+    await page.goto('/');
+    await createShow(page, {
+        title: 'Old Title',
+        status: 'watching',
+        seasons: [],
+        externalIds: { tmdb: 2 },
+    });
+
+    await expect(page.getByText('Old Title')).toBeVisible();
+
+    const updateButton = page.getByRole('button', { name: 'Update shows' });
+
+    await updateButton.click();
+    await expect(updateButton).toBeEnabled({ timeout: 5000 });
+
+    await expect(page.getByText('Shows updated successfully')).toBeVisible();
+    await expect(page.getByText('The Office')).toBeVisible();
+    await expect(page.getByText('Old Title')).not.toBeVisible();
+});

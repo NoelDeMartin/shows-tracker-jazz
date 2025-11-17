@@ -8,6 +8,9 @@ header:
 
 home:
     open: Open
+    update: Update shows
+    updateSuccess: Shows updated successfully
+    updateError: Failed to update shows
     viewAllShows: View all shows →
 
 shows:
@@ -31,8 +34,10 @@ import:
     selectFile: Select JSON File
     startImport: Start Import
     importing: Importing...
+    cancel: Cancel
     processingItems: Processing items {{current}} of {{total}}
     resultsTitle: Import Results
+    cancelledLabel: (Cancelled)
     importedCount: Imported ({{count}})
     skippedCount: Skipped ({{count}})
     failedCount: Failed ({{count}})
@@ -42,6 +47,7 @@ import:
     success: Successfully imported {{count}} show(s)
     noShows: No shows were imported
     partialSuccess: Imported {{count}} show(s) with some failures
+    cancelled: Import cancelled. {{count}} show(s) were imported before cancellation
     error: An error occurred during import
 
 seasons:

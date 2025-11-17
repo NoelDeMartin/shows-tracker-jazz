@@ -1,5 +1,5 @@
-import { useCallback, useState } from 'react';
 import { t } from 'i18next';
+import { useCallback, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

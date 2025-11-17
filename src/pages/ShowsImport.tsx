@@ -1,6 +1,6 @@
 import { t } from 'i18next';
 import { AlertTriangle, CheckCircle2, Loader2, XCircle } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -15,8 +15,10 @@ export default function ShowsImport() {
     const navigate = useNavigate();
     const [selectedFile, setSelectedFile] = useState<File | undefined>();
     const [isImporting, setIsImporting] = useState(false);
+    const [isCancelled, setIsCancelled] = useState(false);
     const [importResult, setImportResult] = useState<ImportResult | undefined>();
     const [importProgress, setImportProgress] = useState<ImportProgress | undefined>();
+    const abortControllerRef = useRef<AbortController | null>(null);
 
     const onFileSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -24,6 +26,14 @@ export default function ShowsImport() {
             setSelectedFile(file);
             setImportResult(undefined);
             setImportProgress(undefined);
+            setIsCancelled(false);
+        }
+    };
+
+    const handleCancel = () => {
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+            setIsCancelled(true);
         }
     };
 
@@ -33,20 +43,31 @@ export default function ShowsImport() {
         }
 
         setIsImporting(true);
+        setIsCancelled(false);
         setImportResult(undefined);
         setImportProgress(undefined);
+
+        // Create new AbortController for this import
+        abortControllerRef.current = new AbortController();
 
         try {
             const fileContent = await selectedFile.text();
             const jsonData = JSON.parse(fileContent) as TVISOShow[];
 
-            const result = await Catalog.importFromTViso(jsonData, (progress) => {
-                setImportProgress(progress);
-            });
+            const result = await Catalog.importFromTViso(
+                jsonData,
+                (progress) => {
+                    setImportProgress(progress);
+                },
+                abortControllerRef.current.signal,
+            );
 
             setImportResult(result);
 
-            if (result.imported.length > 0 && result.failed.length === 0) {
+            // Show appropriate toast based on cancellation status
+            if (abortControllerRef.current.signal.aborted) {
+                toast.info(t('import.cancelled', { count: result.imported.length }));
+            } else if (result.imported.length > 0 && result.failed.length === 0) {
                 toast.success(t('import.success', { count: result.imported.length }));
             } else if (result.imported.length === 0) {
                 toast.error(t('import.noShows'));
@@ -54,8 +75,11 @@ export default function ShowsImport() {
                 toast.warning(t('import.partialSuccess', { count: result.imported.length }));
             }
         } catch (error) {
-            toast.error(t('import.error'));
-            console.error('Import error:', error);
+            // Only show error if not cancelled
+            if (!abortControllerRef.current?.signal.aborted) {
+                toast.error(t('import.error'));
+                console.error('Import error:', error);
+            }
         } finally {
             setIsImporting(false);
             setImportProgress(undefined);
@@ -92,16 +116,23 @@ export default function ShowsImport() {
                         />
                     </div>
 
-                    <Button onClick={handleImport} disabled={!selectedFile || isImporting} className="w-full">
-                        {isImporting ? (
-                            <>
-                                <Loader2 className="mr-2 size-4 animate-spin" />
-                                {t('import.importing')}
-                            </>
-                        ) : (
-                            t('import.startImport')
+                    <div className="flex gap-2">
+                        <Button onClick={handleImport} disabled={!selectedFile || isImporting} className="flex-1">
+                            {isImporting ? (
+                                <>
+                                    <Loader2 className="mr-2 size-4 animate-spin" />
+                                    {t('import.importing')}
+                                </>
+                            ) : (
+                                t('import.startImport')
+                            )}
+                        </Button>
+                        {isImporting && (
+                            <Button onClick={handleCancel} variant="outline">
+                                {t('import.cancel')}
+                            </Button>
                         )}
-                    </Button>
+                    </div>
 
                     {/* Progress Bar */}
                     {isImporting && importProgress && (
@@ -130,7 +161,14 @@ export default function ShowsImport() {
             {importResult && (
                 <Card className="mt-6">
                     <CardHeader>
-                        <CardTitle>{t('import.resultsTitle')}</CardTitle>
+                        <CardTitle className="flex items-center justify-between">
+                            {t('import.resultsTitle')}
+                            {isCancelled && (
+                                <span className="text-muted-foreground text-sm font-normal">
+                                    {t('import.cancelledLabel')}
+                                </span>
+                            )}
+                        </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="grid gap-4 sm:grid-cols-3">

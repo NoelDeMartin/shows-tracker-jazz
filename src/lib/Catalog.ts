@@ -60,7 +60,11 @@ export class CatalogService {
         await waitForLocalSync();
     }
 
-    async importFromTViso(data: TVISOShow[], onProgress?: (progress: ImportProgress) => void): Promise<ImportResult> {
+    async importFromTViso(
+        data: TVISOShow[],
+        onProgress?: (progress: ImportProgress) => void,
+        signal?: AbortSignal,
+    ): Promise<ImportResult> {
         const account = Account.getMe();
         const { root } = await account.$jazz.ensureLoaded({ resolve: { root: { shows: { $each: true } } } });
 
@@ -73,6 +77,11 @@ export class CatalogService {
         const total = data.length;
 
         for (const [index, item] of data.entries()) {
+            // Check for cancellation before processing each item
+            if (signal?.aborted) {
+                break;
+            }
+
             try {
                 // Call progress callback if provided
                 if (onProgress) {
@@ -94,6 +103,11 @@ export class CatalogService {
                 // Search for the show on TMDB
                 const searchResults = await TMDB.searchShows(show.title, show.imdb || undefined);
 
+                // Check for cancellation after async operation
+                if (signal?.aborted) {
+                    break;
+                }
+
                 if (!searchResults || searchResults.length === 0) {
                     result.failed.push({
                         title: show.title,
@@ -108,6 +122,11 @@ export class CatalogService {
                 // Get detailed show information
                 const showDetails = await TMDB.getShowDetails(tmdbShow.id);
                 const externalIds = await TMDB.getShowExternalIds(tmdbShow.id);
+
+                // Check for cancellation after async operations
+                if (signal?.aborted) {
+                    break;
+                }
 
                 // Check if show already exists in catalog by TMDB ID or IMDB ID
                 const existingShow = root.shows.find((s) => {
@@ -159,6 +178,30 @@ export class CatalogService {
         await waitForLocalSync();
 
         return result;
+    }
+
+    async updateShows(): Promise<void> {
+        const account = Account.getMe();
+        const { root } = await account.$jazz.ensureLoaded({
+            resolve: { root: { shows: { $each: { seasons: { $each: { episodes: { $each: true } } } } } } },
+        });
+
+        const activeShows = root.shows.filter((show) => show.status === 'watching');
+
+        for (const show of activeShows) {
+            const tmdbId = show.externalIds?.tmdb;
+
+            if (!tmdbId) {
+                continue;
+            }
+
+            const details = await TMDB.getShowDetails(tmdbId);
+            const externalIds = await TMDB.getShowExternalIds(tmdbId);
+
+            await this.updateShow(show, details, externalIds);
+        }
+
+        await waitForLocalSync();
     }
 
     private async updateShow(
