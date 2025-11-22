@@ -8,3 +8,5 @@ export const Episode = co.map({
     releasedAt: z.date().optional(),
     watchedAt: z.date().optional(),
 });
+
+export type Episode = co.loaded<typeof Episode>;

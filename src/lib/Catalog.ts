@@ -180,7 +180,7 @@ export class CatalogService {
         return result;
     }
 
-    async updateShows(): Promise<void> {
+    async refreshShows(): Promise<void> {
         const account = Account.getMe();
         const { root } = await account.$jazz.ensureLoaded({
             resolve: { root: { shows: { $each: { seasons: { $each: { episodes: { $each: true } } } } } } },
@@ -221,6 +221,10 @@ export class CatalogService {
 
         if (details.poster_path) {
             show.$jazz.set('posterPath', details.poster_path);
+        }
+
+        if (details.backdrop_path) {
+            show.$jazz.set('backdropPath', details.backdrop_path);
         }
 
         if (details.first_air_date) {

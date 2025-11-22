@@ -1,3 +1,4 @@
+import Check from '~icons/lucide/check';
 import CheckCircle2 from '~icons/lucide/check-circle-2';
 import ChevronDown from '~icons/lucide/chevron-down';
 import Clock from '~icons/lucide/clock';
@@ -67,7 +68,7 @@ export default function Show() {
     const StatusIcon = statusIcons[show.status];
     const statusColor = statusColors[show.status];
     const statusBgColor = statusBgColors[show.status];
-    const posterUrl = TMDB.showImageUrl({ poster_path: show.posterPath }, 'w500');
+    const posterUrl = TMDB.showPosterUrl({ poster_path: show.posterPath }, 'w500');
     const startYear = show.startDate ? new Date(show.startDate).getFullYear() : undefined;
     const endYear = show.endDate ? new Date(show.endDate).getFullYear() : undefined;
 
@@ -165,7 +166,7 @@ export default function Show() {
                                             {t('seasons.label', { number: season.number })}
                                             {episodeCount > 0 && (
                                                 <span className="text-muted-foreground text-sm font-normal">
-                                                    ({episodeCount} {episodeCount === 1 ? 'episode' : 'episodes'})
+                                                    ({t('episodes.count', { count: episodeCount })})
                                                 </span>
                                             )}
                                         </CardTitle>
@@ -174,7 +175,7 @@ export default function Show() {
                                                 variant="ghost"
                                                 size="icon"
                                                 onClick={() => toggleSeason(seasonId)}
-                                                aria-label={isExpanded ? 'Collapse season' : 'Expand season'}
+                                                aria-label={isExpanded ? t('seasons.collapse') : t('seasons.expand')}
                                             >
                                                 <ChevronDown
                                                     className={cn('size-5 transition-transform', {
@@ -208,6 +209,19 @@ export default function Show() {
                                                                     </p>
                                                                 )}
                                                             </div>
+                                                            {!episode.watchedAt && (
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="sm"
+                                                                    onClick={() => {
+                                                                        episode.$jazz.set('watchedAt', new Date());
+                                                                    }}
+                                                                    aria-label={t('episodes.markWatchedAria')}
+                                                                >
+                                                                    <Check className="size-4" />
+                                                                    <span>{t('episodes.markWatched')}</span>
+                                                                </Button>
+                                                            )}
                                                         </div>
                                                         <div className="text-muted-foreground flex flex-wrap items-center gap-3 text-xs">
                                                             {episode.releasedAt && (
@@ -216,7 +230,11 @@ export default function Show() {
                                                             {episode.duration && (
                                                                 <>
                                                                     {episode.releasedAt && <span>•</span>}
-                                                                    <span>{episode.duration} min</span>
+                                                                    <span>
+                                                                        {t('episodes.duration', {
+                                                                            duration: episode.duration,
+                                                                        })}
+                                                                    </span>
                                                                 </>
                                                             )}
                                                             {episode.watchedAt && (
@@ -224,7 +242,9 @@ export default function Show() {
                                                                     {(episode.releasedAt || episode.duration) && (
                                                                         <span>•</span>
                                                                     )}
-                                                                    <span className="text-green-600">Watched</span>
+                                                                    <span className="text-green-600">
+                                                                        {t('episodes.watched')}
+                                                                    </span>
                                                                 </>
                                                             )}
                                                         </div>

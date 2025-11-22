@@ -23,6 +23,7 @@
         "no-ternary": "off",
         "no-unsafe-type-assertion": "off",
         "no-unused-expressions": "off",
+        "no-warning-comments": ["error", { "terms": ["todo"], "location": "start", "decoration": [] }],
         "prefer-query-selector": "off",
         "sort-imports": "off",
         "sort-keys": "off",

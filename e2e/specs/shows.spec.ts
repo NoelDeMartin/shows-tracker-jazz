@@ -219,3 +219,34 @@ test('can delete a show', async ({ page }) => {
     await expect(page.getByText('The Sopranos')).not.toBeVisible();
     await expect(page.getByText('The Bear')).toBeVisible();
 });
+
+test('can mark episode as watched', async ({ page }) => {
+    await page.goto('/shows');
+    await createShow(page, {
+        title: 'Better Call Saul',
+        status: 'watching',
+        seasons: [
+            {
+                number: 1,
+                episodes: [
+                    {
+                        number: 1,
+                        title: 'Uno',
+                        description: 'Jimmy McGill attempts to establish himself as a lawyer',
+                    },
+                ],
+            },
+        ],
+        externalIds: {},
+    });
+
+    await page.getByRole('link', { name: 'Open' }).click();
+    await page.getByRole('button', { name: 'Expand season' }).click();
+    await expect(page.getByText('Episode 1: Uno')).toBeVisible();
+    await expect(page.getByText('Watched', { exact: true })).not.toBeVisible();
+    await expect(page.getByRole('button', { name: 'Mark as watched' })).toBeVisible();
+
+    await page.getByRole('button', { name: 'Mark as watched' }).click();
+    await expect(page.getByText('Watched', { exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Mark as watched' })).not.toBeVisible();
+});

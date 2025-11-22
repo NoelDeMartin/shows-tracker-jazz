@@ -42,7 +42,7 @@ function ShowCard({ showId, title, onDelete }: { showId: string; title: string; 
 
     const StatusIcon = statusIcons[coShow.status];
     const statusColor = statusColors[coShow.status];
-    const posterUrl = TMDB.showImageUrl({ poster_path: coShow.posterPath }, 'w500');
+    const posterUrl = TMDB.showPosterUrl({ poster_path: coShow.posterPath }, 'w500');
 
     return (
         <Card>

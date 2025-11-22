@@ -7,10 +7,11 @@ header:
     logout: Log Out
 
 home:
+    title: Up next
     open: Open
-    update: Update shows
-    updateSuccess: Shows updated successfully
-    updateError: Failed to update shows
+    refresh: Update shows
+    refreshSuccess: Shows updated successfully
+    refreshError: Failed to update shows
     viewAllShows: View all shows →
 
 shows:
@@ -57,11 +58,19 @@ seasons:
     remove: Remove Season {{seasonNumber}}
     label: Season {{number}}
     empty: No episodes yet. Add one to get started.
+    expand: Expand season
+    collapse: Collapse season
 
 episodes:
     add: Add Episode
     remove: Remove Season {{seasonNumber}} Episode {{episodeNumber}}
     label: Episode {{number}}
+    count_one: '{{count}} episode'
+    count_other: '{{count}} episodes'
+    markWatched: Mark watched
+    markWatchedAria: Mark as watched
+    watched: Watched
+    duration: '{{duration}} min'
 
 forms:
     title: Title

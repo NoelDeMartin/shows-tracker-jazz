@@ -1,77 +1,107 @@
-import { after } from '@noeldemartin/utils';
-import { Film, RefreshCcw } from 'lucide-react';
+import Clock from '~icons/lucide/clock';
+import RefreshCcw from '~icons/lucide/refresh-ccw';
+import dayjs from 'dayjs';
 import { Link } from 'react-router-dom';
 import { t } from 'i18next';
-import { toast } from 'sonner';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
-import Catalog from '@/lib/Catalog';
-import TMDB from '@/lib/TMDB';
+import Page from '@/components/layout/Page';
+import ShowImage from '@/components/shows/ShowImage';
+import { Badge } from '@/components/shadcn/badge';
 import { Button } from '@/components/shadcn/button';
-import { Card, CardFooter, CardHeader, CardTitle } from '@/components/shadcn/card';
-import { useShows } from '@/schemas/Root';
+import { Card, CardAction, CardContent, CardFooter, CardHeader } from '@/components/shadcn/card';
+import { isFutureEpisode, isUpcomingEpisode, type ShowWithEpisodes } from '@/schemas/Show';
+import { useActiveShows } from '@/schemas/Root';
+import Catalog from '@/lib/Catalog';
+import { toast } from 'sonner';
+import { after } from '@noeldemartin/utils';
 
-export default function Home() {
-    const shows = useShows();
-    const activeShows = useMemo(() => shows?.filter((show) => show.status === 'watching'), [shows]);
-    const [isUpdating, setIsUpdating] = useState(false);
+function ShowStatusBadge({ show }: { show: ShowWithEpisodes }) {
+    // FIXME this type cast shouldn't be necessary
+    const episodes = show.seasons.flatMap((season) => season.episodes as readonly (typeof season.episodes)[number][]);
 
-    if (!activeShows) {
-        return <></>;
+    const upcomingDeadline = useMemo(() => dayjs().add(7, 'days'), []);
+    const pendingEpisodes = useMemo(
+        () => episodes.filter((episode) => !episode.watchedAt && !isFutureEpisode(episode)).length,
+        [episodes],
+    );
+    const upcomingEpisodes = useMemo(
+        () => episodes.filter((episode) => isUpcomingEpisode(episode, upcomingDeadline)).length,
+        [episodes, upcomingDeadline],
+    );
+
+    if (pendingEpisodes) {
+        return <Badge>{pendingEpisodes}</Badge>;
     }
 
-    const handleUpdate = async () => {
-        setIsUpdating(true);
+    if (upcomingEpisodes) {
+        return (
+            <Badge className="bg-blue-500">
+                <Clock className="size-4" />
+            </Badge>
+        );
+    }
+
+    return <></>;
+}
+
+function ShowCard({ show }: { show: ShowWithEpisodes }) {
+    return (
+        <Card className="relative isolate aspect-2/1 overflow-hidden border-0 py-0 outline-1 outline-gray-300 dark:outline-gray-700">
+            <ShowImage show={show} className="absolute inset-0" />
+            <CardHeader className="z-10 px-4 py-3">
+                <CardAction>
+                    <ShowStatusBadge show={show} />
+                </CardAction>
+            </CardHeader>
+            <CardContent className="flex-1" />
+            <CardFooter className="relative isolate z-10 px-4 py-3">
+                <div className="absolute inset-0 bg-linear-to-t from-black to-transparent" />
+                <span className="z-10 text-lg font-medium text-white">{show.title}</span>
+            </CardFooter>
+        </Card>
+    );
+}
+
+export default function Home() {
+    const shows = useActiveShows();
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const refreshShows = useCallback(async () => {
+        setIsRefreshing(true);
 
         try {
-            await Promise.all([Catalog.updateShows(), after({ seconds: 1 })]);
-            toast.success(t('home.updateSuccess'));
+            await Promise.all([Catalog.refreshShows(), after({ seconds: 1 })]);
+
+            toast.success(t('home.refreshSuccess'));
         } catch {
-            toast.error(t('home.updateError'));
+            toast.error(t('home.refreshError'));
         } finally {
-            setIsUpdating(false);
+            setIsRefreshing(false);
         }
-    };
+    }, []);
 
     return (
-        <div className="max-w-content mx-auto flex flex-col pb-8">
+        <Page
+            title={t('home.title')}
+            actions={
+                <Button variant="outline" onClick={refreshShows} disabled={isRefreshing}>
+                    <RefreshCcw className={`size-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                    {t('home.refresh')}
+                </Button>
+            }
+        >
             <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                {activeShows.map((show) => {
-                    const posterUrl = TMDB.showImageUrl({ poster_path: show.posterPath }, 'w500');
-
-                    return (
-                        <li key={show.$jazz.id}>
-                            <Card>
-                                <div className="bg-muted relative flex h-48 w-full items-center justify-center overflow-hidden rounded-t-lg">
-                                    {posterUrl ? (
-                                        <img src={posterUrl} alt={show.title} className="h-full w-full object-cover" />
-                                    ) : (
-                                        <Film className="text-muted-foreground size-12 opacity-50" />
-                                    )}
-                                </div>
-                                <CardHeader>
-                                    <CardTitle>{show.title}</CardTitle>
-                                </CardHeader>
-                                <CardFooter>
-                                    <Button className="w-full" asChild>
-                                        <Link to={`/shows/${show.$jazz.id}`}>{t('home.open')}</Link>
-                                    </Button>
-                                </CardFooter>
-                            </Card>
-                        </li>
-                    );
-                })}
+                {shows?.map((show) => (
+                    <li key={show.$jazz.id}>
+                        <Link to={`/shows/${show.$jazz.id}`}>
+                            <ShowCard show={show} />
+                        </Link>
+                    </li>
+                ))}
             </ul>
-
-            <div className="mt-4 flex justify-between">
-                <Button variant="outline" onClick={handleUpdate} disabled={isUpdating}>
-                    <RefreshCcw className={`size-4 ${isUpdating ? 'animate-spin' : ''}`} />
-                    {t('home.update')}
-                </Button>
-                <Button asChild variant="ghost">
-                    <Link to="/shows">{t('home.viewAllShows')}</Link>
-                </Button>
-            </div>
-        </div>
+            <Button asChild variant="ghost" className="mt-8 -ml-4">
+                <Link to="/shows">{t('home.viewAllShows')}</Link>
+            </Button>
+        </Page>
     );
 }

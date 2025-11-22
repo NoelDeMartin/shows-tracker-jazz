@@ -42,16 +42,27 @@ test('updates shows from TMDB', async ({ page }) => {
     await createShow(page, {
         title: 'Old Title',
         status: 'watching',
-        seasons: [],
+        seasons: [
+            {
+                number: 1,
+                episodes: [
+                    {
+                        number: 1,
+                        title: 'Pilot',
+                        releasedAt: new Date('2020-01-01'),
+                    },
+                ],
+            },
+        ],
         externalIds: { tmdb: 2 },
     });
 
     await expect(page.getByText('Old Title')).toBeVisible();
 
-    const updateButton = page.getByRole('button', { name: 'Update shows' });
+    const refreshButton = page.getByRole('button', { name: 'Update shows' });
 
-    await updateButton.click();
-    await expect(updateButton).toBeEnabled({ timeout: 5000 });
+    await refreshButton.click();
+    await expect(refreshButton).toBeEnabled({ timeout: 5000 });
 
     await expect(page.getByText('Shows updated successfully')).toBeVisible();
     await expect(page.getByText('The Office')).toBeVisible();

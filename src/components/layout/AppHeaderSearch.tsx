@@ -130,7 +130,7 @@ export default function AppHeaderSearch() {
                                     <CommandEmpty>{t('search.noResults')}</CommandEmpty>
                                     <CommandGroup>
                                         {searchResults.map((show) => {
-                                            const imageUrl = TMDB.showImageUrl(show, 'w92');
+                                            const imageUrl = TMDB.showPosterUrl(show, 'w92');
                                             const year = TMDB.showYear(show);
 
                                             return (
@@ -218,9 +218,9 @@ export default function AppHeaderSearch() {
                             )}
                             <DialogHeader>
                                 <div className="flex items-start gap-4">
-                                    {TMDB.showImageUrl(selectedShow, 'w500') ? (
+                                    {TMDB.showPosterUrl(selectedShow, 'w500') ? (
                                         <img
-                                            src={TMDB.showImageUrl(selectedShow, 'w500')}
+                                            src={TMDB.showPosterUrl(selectedShow, 'w500')}
                                             alt={selectedShow.name}
                                             className="h-32 w-22 rounded object-cover shadow-lg"
                                         />

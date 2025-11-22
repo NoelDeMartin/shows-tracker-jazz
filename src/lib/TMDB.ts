@@ -2,6 +2,8 @@ import { facade, required } from '@noeldemartin/utils';
 import { array, enum as zodEnum, number, object, string } from 'zod';
 import type { z, ZodType } from 'zod';
 
+import type { Show } from '@/schemas/Show';
+
 const TMDBShowSchema = object({
     id: number(),
     name: string(),
@@ -68,15 +70,29 @@ export class TMDBService {
         return `https://www.themoviedb.org/tv/${show.id}`;
     }
 
-    public showImageUrl(
-        show: Pick<TMDBShow, 'poster_path'>,
+    public showPosterUrl(
+        show: Pick<TMDBShow, 'poster_path'> | Pick<Show, 'posterPath'>,
         size: 'w92' | 'w500' | 'w780' = 'w500',
     ): string | undefined {
-        if (!show.poster_path) {
+        const posterPath =
+            'poster_path' in show ? show.poster_path : 'posterPath' in show ? show.posterPath : undefined;
+
+        if (!posterPath) {
             return;
         }
 
-        return `https://image.tmdb.org/t/p/${size}${show.poster_path}`;
+        return `https://image.tmdb.org/t/p/${size}${posterPath}`;
+    }
+
+    public showBackdropUrl(show: TMDBShowDetails | Show): string | undefined {
+        const backdropPath =
+            'backdrop_path' in show ? show.backdrop_path : 'backdropPath' in show ? show.backdropPath : undefined;
+
+        if (!backdropPath) {
+            return this.showPosterUrl(show, 'w780');
+        }
+
+        return `https://image.tmdb.org/t/p/w780${backdropPath}`;
     }
 
     public showYear(show: TMDBShow): number | undefined {
@@ -87,14 +103,6 @@ export class TMDBService {
         const year = new Date(show.first_air_date).getFullYear();
 
         return Number.isNaN(year) ? undefined : year;
-    }
-
-    public showBackdropUrl(show: TMDBShowDetails): string | undefined {
-        if (!show.backdrop_path) {
-            return this.showImageUrl(show, 'w780');
-        }
-
-        return `https://image.tmdb.org/t/p/w780${show.backdrop_path}`;
     }
 
     public async searchShows(query: string, imdb?: string | null): Promise<TMDBShow[]> {
