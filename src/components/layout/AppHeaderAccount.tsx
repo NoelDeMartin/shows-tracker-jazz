@@ -1,18 +1,19 @@
+import User from '~icons/lucide/user';
+import Settings from '~icons/lucide/settings';
 import { t } from 'i18next';
 import { Image, useAccount } from 'jazz-tools/react';
-import { LucideSettings, LucideUser } from 'lucide-react';
 import { useState } from 'react';
 
 import LoginForm from '@/components/forms/LoginForm';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Avatar, AvatarFallback } from '@/components/shadcn/avatar';
+import { Button } from '@/components/shadcn/button';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/shadcn/dialog';
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/components/shadcn/dropdown-menu';
 import { betterAuthClient } from '@/lib/auth';
 import { useAsyncEffect } from '@/lib/effects';
 import { Account } from '@/schemas/Account';
@@ -44,11 +45,11 @@ export default function AppHeaderAccount() {
                                     <Image imageId={account.profile.avatar?.$jazz.id} alt="" width={600} />
                                 )}
                                 <AvatarFallback>
-                                    <LucideUser className="size-5 text-gray-600" />
+                                    <User className="size-5 text-gray-600" />
                                 </AvatarFallback>
                             </Avatar>
                         ) : (
-                            <LucideSettings className="size-5" />
+                            <Settings className="size-5" />
                         )}
                     </Button>
                 </DropdownMenuTrigger>

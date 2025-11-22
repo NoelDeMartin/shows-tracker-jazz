@@ -1,14 +1,17 @@
+import AlertTriangle from '~icons/lucide/alert-triangle';
+import CheckCircle2 from '~icons/lucide/check-circle-2';
+import Loader2 from '~icons/lucide/loader-2';
+import XCircle from '~icons/lucide/x-circle';
 import { t } from 'i18next';
-import { AlertTriangle, CheckCircle2, Loader2, XCircle } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 import Catalog from '@/lib/Catalog';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from '@/components/shadcn/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/shadcn/card';
+import { Input } from '@/components/shadcn/input';
+import { Label } from '@/components/shadcn/label';
 import type { ImportProgress, ImportResult, TVISOShow } from '@/lib/Catalog';
 
 export default function ShowsImport() {

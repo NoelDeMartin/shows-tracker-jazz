@@ -1,18 +1,22 @@
+import CheckCircle2 from '~icons/lucide/check-circle-2';
+import Clock from '~icons/lucide/clock';
+import Play from '~icons/lucide/play';
+import Plus from '~icons/lucide/plus';
+import XCircle from '~icons/lucide/x-circle';
 import { t } from 'i18next';
-import { CheckCircle2, Clock, Play, Plus, XCircle } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { LucideIcon } from 'lucide-react';
+import type { ComponentType } from 'react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/shadcn/button';
+import { cn } from '@/lib/shadcn';
 import { Episode } from '@/schemas/Episode';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/shadcn/input';
 import { Season } from '@/schemas/Season';
 import { SeasonForm } from '@/components/forms/SeasonForm';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/shadcn/select';
 import { Show } from '@/schemas/Show';
-import { Textarea } from '@/components/ui/textarea';
-import { cn } from '@/lib/shadcn';
+import { Textarea } from '@/components/shadcn/textarea';
 import { useShows } from '@/schemas/Root';
 import { waitForLocalSync } from '@/lib/jazz';
 import type { EpisodeFormData } from '@/components/forms/EpisodeForm';
@@ -20,7 +24,7 @@ import type { SeasonFormData } from '@/components/forms/SeasonForm';
 
 type ShowStatus = 'planned' | 'watching' | 'completed' | 'dropped';
 
-const statusIcons: Record<ShowStatus, LucideIcon> = {
+const statusIcons: Record<ShowStatus, ComponentType<React.SVGProps<SVGSVGElement>>> = {
     planned: Clock,
     watching: Play,
     completed: CheckCircle2,

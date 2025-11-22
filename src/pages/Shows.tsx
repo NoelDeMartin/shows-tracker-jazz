@@ -1,20 +1,25 @@
-import { CheckCircle2, Clock, Film, Play, Trash2, XCircle } from 'lucide-react';
+import CheckCircle2 from '~icons/lucide/check-circle-2';
+import Clock from '~icons/lucide/clock';
+import Film from '~icons/lucide/film';
+import Play from '~icons/lucide/play';
+import Trash2 from '~icons/lucide/trash-2';
+import XCircle from '~icons/lucide/x-circle';
 import { Link } from 'react-router-dom';
 import { t } from 'i18next';
 import { useCoState } from 'jazz-tools/react-core';
-import type { LucideIcon } from 'lucide-react';
+import type { ComponentType } from 'react';
 
 import TMDB from '@/lib/TMDB';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Show } from '@/schemas/Show';
+import { Button } from '@/components/shadcn/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/shadcn/card';
 import { cn } from '@/lib/shadcn';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/shadcn/select';
+import { Show } from '@/schemas/Show';
 import { useShows } from '@/schemas/Root';
 
 type ShowStatus = 'planned' | 'watching' | 'completed' | 'dropped';
 
-const statusIcons: Record<ShowStatus, LucideIcon> = {
+const statusIcons: Record<ShowStatus, ComponentType<React.SVGProps<SVGSVGElement>>> = {
     planned: Clock,
     watching: Play,
     completed: CheckCircle2,

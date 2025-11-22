@@ -7,6 +7,7 @@ import { RouterProvider } from 'react-router-dom';
 import { StrictMode } from 'react';
 
 import { Account } from '@/schemas/Account';
+import { ThemeProvider } from '@/components/theme';
 import { betterAuthClient } from '@/lib/auth';
 import { initE2E } from '@/lib/e2e';
 import { initLang } from '@/lang';
@@ -26,8 +27,10 @@ Promise.all([initLang(), initE2E()]).then(() => {
                 AccountSchema={Account}
             >
                 <AuthProvider betterAuthClient={betterAuthClient}>
-                    <RouterProvider router={router} />
-                    {import.meta.env.DEV && <JazzInspector />}
+                    <ThemeProvider defaultTheme="dark">
+                        <RouterProvider router={router} />
+                        {import.meta.env.DEV && <JazzInspector />}
+                    </ThemeProvider>
                 </AuthProvider>
             </JazzReactProvider>
         </StrictMode>,

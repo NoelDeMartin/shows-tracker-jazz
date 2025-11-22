@@ -50,11 +50,11 @@ import { z } from 'zod';
 import type { AxiosError } from 'axios';
 import type { ComponentProps } from 'react';
 
-import Card from '@/components/ui/card';
-import Dialog from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import Card from '@/components/shadcn/card';
+import Dialog from '@/components/shadcn/dialog';
+import { Button } from '@/components/shadcn/button';
 import { Show } from '@/schemas/Show';
-import type { CardProps } from '@/components/ui/card';
+import type { CardProps } from '@/components/shadcn/card';
 import type { ShowSchema } from '@/schemas/Show';
 
 import './styles.css';

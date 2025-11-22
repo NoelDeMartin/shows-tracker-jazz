@@ -1,15 +1,15 @@
-import { t } from 'i18next';
+import { after } from '@noeldemartin/utils';
 import { Film, RefreshCcw } from 'lucide-react';
-import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { t } from 'i18next';
 import { toast } from 'sonner';
+import { useMemo, useState } from 'react';
 
 import Catalog from '@/lib/Catalog';
 import TMDB from '@/lib/TMDB';
-import { Button } from '@/components/ui/button';
-import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/shadcn/button';
+import { Card, CardFooter, CardHeader, CardTitle } from '@/components/shadcn/card';
 import { useShows } from '@/schemas/Root';
-import { after } from '@noeldemartin/utils';
 
 export default function Home() {
     const shows = useShows();

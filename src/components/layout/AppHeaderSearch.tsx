@@ -1,9 +1,11 @@
+import Plus from '~icons/lucide/plus';
+import Search from '~icons/lucide/search';
+import Star from '~icons/lucide/star';
 import { t } from 'i18next';
-import { LucideSearch, Plus, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/shadcn/button';
 import {
     CommandDialog,
     CommandEmpty,
@@ -11,9 +13,9 @@ import {
     CommandInput,
     CommandItem,
     CommandList,
-} from '@/components/ui/command';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Spinner } from '@/components/ui/spinner';
+} from '@/components/shadcn/command';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/shadcn/dialog';
+import { Spinner } from '@/components/shadcn/spinner';
 import Catalog from '@/lib/Catalog';
 import TMDB from '@/lib/TMDB';
 import type { TMDBShow, TMDBShowDetails } from '@/lib/TMDB';
@@ -108,7 +110,7 @@ export default function AppHeaderSearch() {
     return (
         <>
             <Button variant="ghost" onClick={() => setOpen(true)}>
-                <LucideSearch className="size-5" />
+                <Search className="size-5" />
             </Button>
 
             <CommandDialog open={open} onOpenChange={handleOpenChange}>

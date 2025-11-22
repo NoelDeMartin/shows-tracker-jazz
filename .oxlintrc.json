@@ -1,5 +1,5 @@
 {
-    "ignorePatterns": ["src/components/ui"],
+    "ignorePatterns": ["src/components/shadcn"],
     "categories": {
         "correctness": "error",
         "suspicious": "error",

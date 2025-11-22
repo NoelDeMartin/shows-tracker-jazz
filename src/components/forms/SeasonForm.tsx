@@ -1,8 +1,9 @@
+import Plus from '~icons/lucide/plus';
+import Trash2 from '~icons/lucide/trash-2';
 import { t } from 'i18next';
-import { Plus, Trash2 } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/shadcn/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/shadcn/card';
 
 import { EpisodeForm } from './EpisodeForm';
 import type { EpisodeFormData } from './EpisodeForm';
