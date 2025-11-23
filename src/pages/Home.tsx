@@ -34,22 +34,24 @@ function ShowStatusBadge({ show, className }: { show: ShowWithEpisodes; classNam
     return (
         <div
             className={cn(
-                'bg-primary flex size-7 flex-row items-center justify-center gap-1 rounded-full text-sm group-hover:h-5 group-hover:w-max group-hover:px-2',
+                'bg-primary flex size-7 items-center justify-center gap-1 rounded-full text-sm group-hover:h-5 group-hover:w-max group-hover:px-2',
                 pendingEpisodes ? 'bg-primary' : 'bg-blue-500',
                 className,
             )}
         >
-            {upcomingEpisodeAt ? <Clock className="-mr-1 size-4 group-hover:hidden" /> : <></>}
+            {pendingEpisodes ? <></> : <Clock className="-mr-1 size-4 group-hover:hidden" />}
 
             <div
-                className="flex flex-row items-center justify-center gap-1 group-hover:-mt-0.5"
+                className="flex items-center justify-center gap-1 group-hover:-mt-0.5"
                 dangerouslySetInnerHTML={{
                     __html: `${
-                        upcomingEpisodeAt
-                            ? `<span class="${textClass}">${t('home.upcomingEpisodes', { when: upcomingEpisodeAt.fromNow() })}`
-                            : t('home.pendingEpisodes', {
+                        pendingEpisodes
+                            ? t('home.pendingEpisodes', {
                                   num: `<span>${pendingEpisodes}</span><span class="${textClass}">`,
                               })
+                            : upcomingEpisodeAt
+                              ? `<span class="${textClass}">${t('home.upcomingEpisodes', { when: upcomingEpisodeAt.fromNow() })}`
+                              : ''
                     }</span>`,
                 }}
             />
@@ -63,7 +65,7 @@ function ShowCard({ show }: { show: ShowWithEpisodes }) {
             to={`/shows/${show.$jazz.id}`}
             className="group relative isolate block aspect-2/1 transition-transform duration-300 hover:z-10 hover:scale-110 focus:z-10 focus:scale-110"
         >
-            <ShowImage show={show} className="absolute inset-0" />
+            <ShowImage show={show} backdrop className="absolute inset-0" />
             <ShowStatusBadge show={show} className="absolute top-5 right-5 z-10 group-hover:left-5" />
             <div className="sr-only inset-x-0 bottom-0 z-10 h-min bg-linear-to-t from-black to-transparent group-hover:not-sr-only group-hover:absolute group-hover:p-4">
                 {show.title}
@@ -73,7 +75,7 @@ function ShowCard({ show }: { show: ShowWithEpisodes }) {
 }
 
 export default function Home() {
-    const shows = useActiveShows();
+    const [shows, showsLoader] = useActiveShows();
     const [isRefreshing, setIsRefreshing] = useState(false);
     const refreshShows = useCallback(async () => {
         setIsRefreshing(true);
@@ -92,15 +94,17 @@ export default function Home() {
     return (
         <Page
             title={t('home.title')}
-            actions={
+            afterTitle={
                 <Button variant="ghost" onClick={refreshShows} disabled={isRefreshing} title={t('home.refresh')}>
                     <RefreshCcw className={`size-4 ${isRefreshing ? 'animate-spin' : ''}`} />
                     <span className="sr-only">{t('home.refresh')}</span>
                 </Button>
             }
         >
+            {showsLoader}
+
             <ul className="isolate grid grid-cols-4">
-                {shows?.map((show) => (
+                {shows.map((show) => (
                     <li key={show.$jazz.id}>
                         <ShowCard show={show} />
                     </li>

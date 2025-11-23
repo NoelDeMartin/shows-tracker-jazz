@@ -11,7 +11,8 @@ test('imports shows from TViso', async ({ page }) => {
     await createShow(page, 'The Office', [], { status: 'watching', externalIds: { tmdb: 2 } });
 
     await page.getByRole('link', { name: 'View all shows' }).click();
-    await page.getByRole('link', { name: 'Import Show' }).click();
+    await page.getByRole('button', { name: 'More options' }).click();
+    await page.getByRole('menuitem', { name: 'Import shows' }).click();
 
     await page.locator('input[type="file"]').setInputFiles(join(process.cwd(), 'e2e/fixtures/tviso.json'));
     await page.getByRole('button', { name: 'Start Import' }).click();

@@ -1,138 +1,136 @@
-import CheckCircle2 from '~icons/lucide/check-circle-2';
-import Clock from '~icons/lucide/clock';
-import Film from '~icons/lucide/film';
-import Play from '~icons/lucide/play';
-import Trash2 from '~icons/lucide/trash-2';
-import XCircle from '~icons/lucide/x-circle';
+import MoreVertical from '~icons/lucide/more-vertical';
+import Search from '~icons/lucide/search';
 import { Link } from 'react-router-dom';
+import { stringToSlug } from '@noeldemartin/utils';
 import { t } from 'i18next';
-import { useCoState } from 'jazz-tools/react-core';
-import type { ComponentType } from 'react';
+import { useMemo, useState } from 'react';
 
-import TMDB from '@/lib/TMDB';
+import Page from '@/components/layout/Page';
+import ShowImage from '@/components/shows/ShowImage';
+import ShowStatusSelect from '@/components/shows/ShowStatusSelect';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/shadcn/dropdown-menu';
 import { Button } from '@/components/shadcn/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/shadcn/card';
 import { cn } from '@/lib/shadcn';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/shadcn/select';
-import { Show } from '@/schemas/Show';
+import { getStatusVars, type Show, type ShowStatus } from '@/schemas/Show';
+import { Input } from '@/components/shadcn/input';
 import { useShows } from '@/schemas/Root';
 
-type ShowStatus = 'planned' | 'watching' | 'completed' | 'dropped';
-
-const statusIcons: Record<ShowStatus, ComponentType<React.SVGProps<SVGSVGElement>>> = {
-    planned: Clock,
-    watching: Play,
-    completed: CheckCircle2,
-    dropped: XCircle,
-};
-
-const statusColors: Record<ShowStatus, string> = {
-    planned: 'text-blue-500',
-    watching: 'text-green-500',
-    completed: 'text-purple-500',
-    dropped: 'text-red-500',
-};
-
-function ShowCard({ showId, title, onDelete }: { showId: string; title: string; onDelete: () => void }) {
-    const coShow = useCoState(Show, showId);
-
-    if (!coShow.$isLoaded) {
-        return <></>;
-    }
-
-    const StatusIcon = statusIcons[coShow.status];
-    const statusColor = statusColors[coShow.status];
-    const posterUrl = TMDB.showPosterUrl({ poster_path: coShow.posterPath }, 'w500');
+function ShowStatusBadge({ show, className }: { show: Show; className?: string }) {
+    const { backgroundClass, Icon } = useMemo(() => getStatusVars(show.status), [show]);
 
     return (
-        <Card>
-            <div className="bg-muted relative flex h-48 w-full items-center justify-center overflow-hidden rounded-t-lg">
-                {posterUrl ? (
-                    <img src={posterUrl} alt={title} className="h-full w-full object-cover" />
-                ) : (
-                    <Film className="text-muted-foreground size-12 opacity-50" />
-                )}
-            </div>
-            <CardHeader>
-                <div className="flex items-center gap-2">
-                    <StatusIcon className={cn('size-5', statusColor)} />
-                    <CardTitle className="flex-1">{title}</CardTitle>
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={onDelete}
-                        className="ml-auto"
-                        aria-label={t('show.delete', { title })}
-                    >
-                        <Trash2 className="text-destructive size-4" />
-                    </Button>
-                </div>
-            </CardHeader>
-            <CardContent>
-                <Select
-                    value={coShow.status}
-                    onValueChange={(value) => {
-                        coShow.$jazz.set('status', value as ShowStatus);
-                    }}
-                >
-                    <SelectTrigger className="w-full">
-                        <div className="flex items-center gap-2">
-                            <SelectValue />
-                        </div>
-                    </SelectTrigger>
-                    <SelectContent>
-                        {Object.entries(statusIcons).map(([status, Icon]) => (
-                            <SelectItem key={status} value={status}>
-                                <div className="flex items-center gap-2">
-                                    <Icon className={cn('size-4', statusColors[status as ShowStatus])} />
-                                    <span>{t(`shows.status.${status}`)}</span>
-                                </div>
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-            </CardContent>
-            <CardFooter>
-                <Button className="w-full" asChild>
-                    <Link to={`/shows/${showId}`}>{t('home.open')}</Link>
+        <div
+            className={cn(
+                'flex size-10 items-center justify-center rounded-full text-white',
+                backgroundClass,
+                className,
+            )}
+            aria-label={show.status}
+        >
+            <Icon className="size-6" />
+        </div>
+    );
+}
+
+function ShowCard({ show }: { show: Show }) {
+    return (
+        <Link
+            to={`/shows/${show.$jazz.id}`}
+            className="relative block"
+            aria-label={`${show.title} (${t(`shows.status.${show.status}`)})`}
+        >
+            <ShowImage show={show} className="aspect-2/3" showTitle />
+            <ShowStatusBadge show={show} className="absolute top-3 right-3 z-10" />
+        </Link>
+    );
+}
+
+function OptionsMenu() {
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" aria-label={t('shows.menu')} className="-ml-4">
+                    <MoreVertical className="size-5" />
                 </Button>
-            </CardFooter>
-        </Card>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                    <Link to="/shows/import">{t('shows.import')}</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                    <Link to="/shows/create">{t('shows.create')}</Link>
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
+}
+
+function Filters({
+    search,
+    status,
+    setSearch,
+    setStatus,
+}: {
+    search: string;
+    status: ShowStatus | 'all';
+    setSearch: (search: string) => void;
+    setStatus: (status: ShowStatus | 'all') => void;
+}) {
+    return (
+        <div className="flex items-center gap-2">
+            <div className="relative">
+                <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+                <Input
+                    type="search"
+                    placeholder={t('shows.searchPlaceholder')}
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="w-64 pl-9"
+                />
+            </div>
+            <ShowStatusSelect value={status} onValueChange={setStatus} />
+        </div>
     );
 }
 
 export default function Shows() {
     const shows = useShows();
+    const [status, setStatus] = useState<ShowStatus | 'all'>('all');
+    const [search, setSearch] = useState('');
+    const filteredShows = useMemo(() => {
+        const normalizedSearch = stringToSlug(search);
 
-    if (!shows) {
+        return shows?.filter((show) => {
+            if (status !== 'all' && show.status !== status) {
+                return false;
+            }
+
+            return !normalizedSearch || stringToSlug(show.title).includes(normalizedSearch);
+        });
+    }, [shows, status, search]);
+
+    if (!filteredShows) {
         return <></>;
     }
 
     return (
-        <div className="max-w-content mx-auto flex flex-col pb-8">
-            <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                {shows.map((show) => (
+        <Page
+            title={`${t('shows.title')} (${filteredShows.length})`}
+            beforeTitle={<OptionsMenu />}
+            actions={<Filters search={search} status={status} setSearch={setSearch} setStatus={setStatus} />}
+        >
+            <ul className="grid grid-cols-6 gap-3">
+                {filteredShows.map((show) => (
                     <li key={show.$jazz.id}>
-                        <ShowCard
-                            showId={show.$jazz.id}
-                            title={show.title}
-                            onDelete={() => {
-                                const index = shows.findIndex((s) => s.$jazz.id === show.$jazz.id);
-                                if (index !== -1) {
-                                    shows.$jazz.splice(index, 1);
-                                }
-                            }}
-                        />
+                        <ShowCard show={show} />
                     </li>
                 ))}
             </ul>
-            <Button asChild className="mt-8">
-                <Link to="/shows/create">{t('shows.create')}</Link>
-            </Button>
-            <Button asChild className="mt-8">
-                <Link to="/shows/import">{t('shows.import')}</Link>
-            </Button>
-        </div>
+        </Page>
     );
 }

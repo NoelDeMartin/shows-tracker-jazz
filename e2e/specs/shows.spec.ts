@@ -17,7 +17,8 @@ test('displays all shows regardless of status', async ({ page }) => {
 test('creates a new show successfully', async ({ page }) => {
     await page.goto('/shows');
 
-    await page.getByRole('link', { name: 'Create Show' }).click();
+    await page.getByRole('button', { name: 'More options' }).click();
+    await page.getByRole('menuitem', { name: 'Add new show' }).click();
     await expect(page).toHaveURL('/shows/create');
 
     await page.getByLabel('Title').fill('Game of Thrones');
@@ -194,15 +195,16 @@ test('can change show status', async ({ page }) => {
 
     await createShow(page, 'House of the Dragon', [], { status: 'planned' });
 
-    const showCard = page.locator('li').filter({ hasText: 'House of the Dragon' });
+    await page.getByRole('link', { name: 'House of the Dragon (Planned)' }).click();
+    await expect(page.getByRole('combobox')).toHaveText('Planned');
 
-    await expect(showCard.getByText('Planned')).toBeVisible();
-
-    await showCard.getByRole('combobox').click();
+    await page.getByRole('combobox').click();
     await page.getByRole('option', { name: 'Watching' }).click();
 
-    await expect(showCard.getByText('Watching')).toBeVisible();
-    await expect(showCard.getByText('Planned')).not.toBeVisible();
+    await expect(page.getByRole('combobox')).toHaveText('Watching');
+
+    await page.goto('/shows');
+    await expect(page.getByLabel('House of the Dragon (Watching)')).toBeVisible();
 });
 
 test('can delete a show', async ({ page }) => {
@@ -214,8 +216,17 @@ test('can delete a show', async ({ page }) => {
     await expect(page.getByText('The Sopranos')).toBeVisible();
     await expect(page.getByText('The Bear')).toBeVisible();
 
+    await page.getByRole('link', { name: 'The Sopranos (Watching)' }).click();
+    await expect(page).toHaveURL(/\/shows\/[^/]+$/);
+
     await page.getByRole('button', { name: 'Delete Show The Sopranos' }).click();
 
+    await expect(page.getByRole('dialog')).toBeVisible();
+    await expect(page.getByText(/Are you sure you want to delete "The Sopranos"/)).toBeVisible();
+
+    await page.getByRole('button', { name: 'Delete Show The Sopranos' }).last().click();
+
+    await expect(page).toHaveURL('/shows');
     await expect(page.getByText('The Sopranos')).not.toBeVisible();
     await expect(page.getByText('The Bear')).toBeVisible();
 });
@@ -234,7 +245,7 @@ test('can mark episode as watched', async ({ page }) => {
         { status: 'watching' },
     );
 
-    await page.getByRole('link', { name: 'Open' }).click();
+    await page.getByRole('link', { name: 'Better Call Saul (Watching)' }).click();
     await page.getByRole('button', { name: 'Expand season' }).click();
     await expect(page.getByText('Episode 1: Uno')).toBeVisible();
     await expect(page.getByText('Watched', { exact: true })).not.toBeVisible();

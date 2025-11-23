@@ -3,18 +3,32 @@ import CheckCircle2 from '~icons/lucide/check-circle-2';
 import ChevronDown from '~icons/lucide/chevron-down';
 import Clock from '~icons/lucide/clock';
 import Film from '~icons/lucide/film';
+import Pencil from '~icons/lucide/pencil';
 import Play from '~icons/lucide/play';
+import Trash2 from '~icons/lucide/trash-2';
 import XCircle from '~icons/lucide/x-circle';
 import { t } from 'i18next';
-import { useCoState } from 'jazz-tools/react-core';
-import { useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useAccount, useCoState } from 'jazz-tools/react-core';
 import { useState } from 'react';
 import type { ComponentType } from 'react';
 
+import Page from '@/components/layout/Page';
 import TMDB from '@/lib/TMDB';
 import { Button } from '@/components/shadcn/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/shadcn/card';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/shadcn/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/shadcn/select';
+import { waitForLocalSync } from '@/lib/jazz';
 import { cn } from '@/lib/shadcn';
+import { Account } from '@/schemas/Account';
 import { Show as CoShow } from '@/schemas/Show';
 
 type ShowStatus = 'planned' | 'watching' | 'completed' | 'dropped';
@@ -58,14 +72,16 @@ function formatDate(date: Date | undefined): string | undefined {
 
 export default function Show() {
     const { id } = useParams();
+    const navigate = useNavigate();
     const show = useCoState(CoShow, id, { resolve: { seasons: { $each: { episodes: { $each: true } } } } });
+    const account = useAccount(Account, { resolve: { root: { shows: { $each: true } } } });
     const [expandedSeasons, setExpandedSeasons] = useState<Set<string>>(new Set());
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
     if (!show.$isLoaded) {
         return <ShowNotFound />;
     }
 
-    const StatusIcon = statusIcons[show.status];
     const statusColor = statusColors[show.status];
     const statusBgColor = statusBgColors[show.status];
     const posterUrl = TMDB.showPosterUrl({ poster_path: show.posterPath }, 'w500');
@@ -84,8 +100,21 @@ export default function Show() {
         });
     };
 
+    const handleDelete = async () => {
+        if (!account.$isLoaded || !show.$isLoaded) {
+            return;
+        }
+
+        const showIndex = account.root.shows.findIndex((s) => s.$jazz.id === show.$jazz.id);
+        if (showIndex !== -1) {
+            account.root.shows.$jazz.remove(showIndex);
+            await waitForLocalSync();
+            await navigate('/shows');
+        }
+    };
+
     return (
-        <div className="max-w-content mx-auto pb-8">
+        <Page>
             {/* Header Section with Poster */}
             <div className="mb-6 flex flex-col gap-6 sm:flex-row">
                 <div className="bg-muted relative h-64 w-full shrink-0 overflow-hidden rounded-lg sm:h-96 sm:w-64">
@@ -100,7 +129,22 @@ export default function Show() {
 
                 <div className="flex flex-1 flex-col gap-4">
                     <div>
-                        <h1 className="mb-2 text-3xl font-bold">{show.title}</h1>
+                        <div className="mb-2 flex items-center gap-3">
+                            <h1 className="text-3xl font-bold">{show.title}</h1>
+                            <Button variant="ghost" size="icon" asChild>
+                                <Link to={`/shows/${id}/edit`} aria-label={t('show.edit')}>
+                                    <Pencil className="size-4" />
+                                </Link>
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => setIsDeleteDialogOpen(true)}
+                                aria-label={t('show.delete', { title: show.title })}
+                            >
+                                <Trash2 className="size-4" />
+                            </Button>
+                        </div>
                         <div className="flex flex-wrap items-center gap-3 text-sm">
                             {startYear && (
                                 <>
@@ -133,16 +177,28 @@ export default function Show() {
                     )}
 
                     <div className="mt-auto">
-                        <div
-                            className={cn(
-                                'inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium',
-                                statusBgColor,
-                                statusColor,
-                            )}
+                        <Select
+                            value={show.status}
+                            onValueChange={(value) => {
+                                show.$jazz.set('status', value as ShowStatus);
+                            }}
                         >
-                            <StatusIcon className="size-4" />
-                            <span>{t(`shows.status.${show.status}`)}</span>
-                        </div>
+                            <SelectTrigger className={cn('w-auto', statusBgColor, statusColor)}>
+                                <div className="flex items-center gap-2">
+                                    <SelectValue />
+                                </div>
+                            </SelectTrigger>
+                            <SelectContent>
+                                {Object.entries(statusIcons).map(([status, Icon]) => (
+                                    <SelectItem key={status} value={status}>
+                                        <div className="flex items-center gap-2">
+                                            <Icon className={cn('size-4', statusColors[status as ShowStatus])} />
+                                            <span>{t(`shows.status.${status}`)}</span>
+                                        </div>
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
                 </div>
             </div>
@@ -259,6 +315,23 @@ export default function Show() {
                     })}
                 </div>
             )}
-        </div>
+
+            <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>{t('show.delete', { title: show.title })}</DialogTitle>
+                        <DialogDescription>{t('show.deleteConfirmation', { title: show.title })}</DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+                            {t('forms.cancel')}
+                        </Button>
+                        <Button variant="destructive" onClick={handleDelete}>
+                            {t('show.delete', { title: show.title })}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        </Page>
     );
 }

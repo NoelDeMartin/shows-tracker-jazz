@@ -17,9 +17,12 @@ home:
 
 shows:
     title: Shows
-    create: Create Show
-    import: Import Show
+    create: Add new show
+    import: Import shows
+    menu: More options
+    searchPlaceholder: Filter by title...
     status:
+        all: All
         planned: Planned
         watching: Watching
         completed: Completed
@@ -29,6 +32,8 @@ show:
     notFound: '404: Show Not Found'
     unknownError: Unknown error
     delete: Delete Show {{title}}
+    deleteConfirmation: Are you sure you want to delete "{{title}}"? This action cannot be undone.
+    edit: Edit show
 
 import:
     title: Import Show
