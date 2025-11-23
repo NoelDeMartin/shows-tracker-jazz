@@ -7,12 +7,12 @@ interface PageProps {
 
 export default function Page({ children, actions, title }: PropsWithChildren<PageProps>) {
     return (
-        <div className="max-w-content mx-auto pb-8">
-            <div className="mb-6 flex items-center justify-between">
-                <h1 className="text-3xl font-bold">{title}</h1>
+        <div className="mt-8 overflow-x-hidden pb-8">
+            <div className="max-w-content mx-auto mb-6 flex items-center gap-1">
+                <h1 className="-mt-0.75 text-2xl font-medium">{title}</h1>
                 {actions}
             </div>
-            {children}
+            <div className="max-w-content mx-auto">{children}</div>
         </div>
     );
 }

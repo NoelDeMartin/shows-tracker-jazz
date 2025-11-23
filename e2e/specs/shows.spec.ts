@@ -5,9 +5,9 @@ import { createShow } from '@e2e/seeders';
 test('displays all shows regardless of status', async ({ page }) => {
     await page.goto('/shows');
 
-    await createShow(page, { title: 'Stranger Things', status: 'watching', seasons: [], externalIds: {} });
-    await createShow(page, { title: 'The Crown', status: 'planned', seasons: [], externalIds: {} });
-    await createShow(page, { title: 'Breaking Bad', status: 'completed', seasons: [], externalIds: {} });
+    await createShow(page, 'Stranger Things', [], { status: 'watching' });
+    await createShow(page, 'The Crown', [], { status: 'planned' });
+    await createShow(page, 'Breaking Bad', [], { status: 'completed' });
 
     await expect(page.getByText('Stranger Things')).toBeVisible();
     await expect(page.getByText('The Crown')).toBeVisible();
@@ -192,7 +192,7 @@ test('creates a show with complete data including multiple seasons and episodes'
 test('can change show status', async ({ page }) => {
     await page.goto('/shows');
 
-    await createShow(page, { title: 'House of the Dragon', status: 'planned', seasons: [], externalIds: {} });
+    await createShow(page, 'House of the Dragon', [], { status: 'planned' });
 
     const showCard = page.locator('li').filter({ hasText: 'House of the Dragon' });
 
@@ -208,8 +208,8 @@ test('can change show status', async ({ page }) => {
 test('can delete a show', async ({ page }) => {
     await page.goto('/shows');
 
-    await createShow(page, { title: 'The Sopranos', status: 'watching', seasons: [], externalIds: {} });
-    await createShow(page, { title: 'The Bear', status: 'watching', seasons: [], externalIds: {} });
+    await createShow(page, 'The Sopranos', [], { status: 'watching' });
+    await createShow(page, 'The Bear', [], { status: 'watching' });
 
     await expect(page.getByText('The Sopranos')).toBeVisible();
     await expect(page.getByText('The Bear')).toBeVisible();
@@ -222,23 +222,17 @@ test('can delete a show', async ({ page }) => {
 
 test('can mark episode as watched', async ({ page }) => {
     await page.goto('/shows');
-    await createShow(page, {
-        title: 'Better Call Saul',
-        status: 'watching',
-        seasons: [
+    await createShow(
+        page,
+        'Better Call Saul',
+        [
             {
-                number: 1,
-                episodes: [
-                    {
-                        number: 1,
-                        title: 'Uno',
-                        description: 'Jimmy McGill attempts to establish himself as a lawyer',
-                    },
-                ],
+                title: 'Uno',
+                description: 'Jimmy McGill attempts to establish himself as a lawyer',
             },
         ],
-        externalIds: {},
-    });
+        { status: 'watching' },
+    );
 
     await page.getByRole('link', { name: 'Open' }).click();
     await page.getByRole('button', { name: 'Expand season' }).click();

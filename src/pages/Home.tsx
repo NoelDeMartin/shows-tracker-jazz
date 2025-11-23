@@ -1,22 +1,21 @@
 import Clock from '~icons/lucide/clock';
-import RefreshCcw from '~icons/lucide/refresh-ccw';
 import dayjs from 'dayjs';
+import RefreshCcw from '~icons/lucide/refresh-ccw';
+import { after } from '@noeldemartin/utils';
 import { Link } from 'react-router-dom';
 import { t } from 'i18next';
+import { toast } from 'sonner';
 import { useCallback, useMemo, useState } from 'react';
 
+import Catalog from '@/lib/Catalog';
 import Page from '@/components/layout/Page';
 import ShowImage from '@/components/shows/ShowImage';
-import { Badge } from '@/components/shadcn/badge';
 import { Button } from '@/components/shadcn/button';
-import { Card, CardAction, CardContent, CardFooter, CardHeader } from '@/components/shadcn/card';
+import { cn } from '@/lib/shadcn';
 import { isFutureEpisode, isUpcomingEpisode, type ShowWithEpisodes } from '@/schemas/Show';
 import { useActiveShows } from '@/schemas/Root';
-import Catalog from '@/lib/Catalog';
-import { toast } from 'sonner';
-import { after } from '@noeldemartin/utils';
 
-function ShowStatusBadge({ show }: { show: ShowWithEpisodes }) {
+function ShowStatusBadge({ show, className }: { show: ShowWithEpisodes; className?: string }) {
     // FIXME this type cast shouldn't be necessary
     const episodes = show.seasons.flatMap((season) => season.episodes as readonly (typeof season.episodes)[number][]);
 
@@ -25,41 +24,51 @@ function ShowStatusBadge({ show }: { show: ShowWithEpisodes }) {
         () => episodes.filter((episode) => !episode.watchedAt && !isFutureEpisode(episode)).length,
         [episodes],
     );
-    const upcomingEpisodes = useMemo(
-        () => episodes.filter((episode) => isUpcomingEpisode(episode, upcomingDeadline)).length,
-        [episodes, upcomingDeadline],
+    const upcomingEpisodeAt = useMemo(() => {
+        const releasedAt = episodes.find((episode) => isUpcomingEpisode(episode, upcomingDeadline))?.releasedAt;
+
+        return releasedAt ? dayjs(releasedAt) : undefined;
+    }, [episodes, upcomingDeadline]);
+    const textClass = 'sr-only group-hover:not-sr-only';
+
+    return (
+        <div
+            className={cn(
+                'bg-primary flex size-7 flex-row items-center justify-center gap-1 rounded-full text-sm group-hover:h-5 group-hover:w-max group-hover:px-2',
+                pendingEpisodes ? 'bg-primary' : 'bg-blue-500',
+                className,
+            )}
+        >
+            {upcomingEpisodeAt ? <Clock className="-mr-1 size-4 group-hover:hidden" /> : <></>}
+
+            <div
+                className="flex flex-row items-center justify-center gap-1 group-hover:-mt-0.5"
+                dangerouslySetInnerHTML={{
+                    __html: `${
+                        upcomingEpisodeAt
+                            ? `<span class="${textClass}">${t('home.upcomingEpisodes', { when: upcomingEpisodeAt.fromNow() })}`
+                            : t('home.pendingEpisodes', {
+                                  num: `<span>${pendingEpisodes}</span><span class="${textClass}">`,
+                              })
+                    }</span>`,
+                }}
+            />
+        </div>
     );
-
-    if (pendingEpisodes) {
-        return <Badge>{pendingEpisodes}</Badge>;
-    }
-
-    if (upcomingEpisodes) {
-        return (
-            <Badge className="bg-blue-500">
-                <Clock className="size-4" />
-            </Badge>
-        );
-    }
-
-    return <></>;
 }
 
 function ShowCard({ show }: { show: ShowWithEpisodes }) {
     return (
-        <Card className="relative isolate aspect-2/1 overflow-hidden border-0 py-0 outline-1 outline-gray-300 dark:outline-gray-700">
+        <Link
+            to={`/shows/${show.$jazz.id}`}
+            className="group relative isolate block aspect-2/1 transition-transform duration-300 hover:z-10 hover:scale-110 focus:z-10 focus:scale-110"
+        >
             <ShowImage show={show} className="absolute inset-0" />
-            <CardHeader className="z-10 px-4 py-3">
-                <CardAction>
-                    <ShowStatusBadge show={show} />
-                </CardAction>
-            </CardHeader>
-            <CardContent className="flex-1" />
-            <CardFooter className="relative isolate z-10 px-4 py-3">
-                <div className="absolute inset-0 bg-linear-to-t from-black to-transparent" />
-                <span className="z-10 text-lg font-medium text-white">{show.title}</span>
-            </CardFooter>
-        </Card>
+            <ShowStatusBadge show={show} className="absolute top-5 right-5 z-10 group-hover:left-5" />
+            <div className="sr-only inset-x-0 bottom-0 z-10 h-min bg-linear-to-t from-black to-transparent group-hover:not-sr-only group-hover:absolute group-hover:p-4">
+                {show.title}
+            </div>
+        </Link>
     );
 }
 
@@ -84,24 +93,24 @@ export default function Home() {
         <Page
             title={t('home.title')}
             actions={
-                <Button variant="outline" onClick={refreshShows} disabled={isRefreshing}>
+                <Button variant="ghost" onClick={refreshShows} disabled={isRefreshing} title={t('home.refresh')}>
                     <RefreshCcw className={`size-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-                    {t('home.refresh')}
+                    <span className="sr-only">{t('home.refresh')}</span>
                 </Button>
             }
         >
-            <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <ul className="isolate grid grid-cols-4">
                 {shows?.map((show) => (
                     <li key={show.$jazz.id}>
-                        <Link to={`/shows/${show.$jazz.id}`}>
-                            <ShowCard show={show} />
-                        </Link>
+                        <ShowCard show={show} />
                     </li>
                 ))}
             </ul>
-            <Button asChild variant="ghost" className="mt-8 -ml-4">
-                <Link to="/shows">{t('home.viewAllShows')}</Link>
-            </Button>
+            <div className="mt-8 flex justify-end">
+                <Button asChild variant="ghost" className="-mr-4">
+                    <Link to="/shows">{t('home.viewAllShows')}</Link>
+                </Button>
+            </div>
         </Page>
     );
 }

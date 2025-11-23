@@ -8,7 +8,7 @@ test('imports shows from TViso', async ({ page }) => {
     setupTMDBMocks(page);
 
     await page.goto('/');
-    await createShow(page, { title: 'The Office', status: 'watching', seasons: [], externalIds: { tmdb: 2 } });
+    await createShow(page, 'The Office', [], { status: 'watching', externalIds: { tmdb: 2 } });
 
     await page.getByRole('link', { name: 'View all shows' }).click();
     await page.getByRole('link', { name: 'Import Show' }).click();
@@ -39,23 +39,17 @@ test('updates shows from TMDB', async ({ page }) => {
     setupTMDBMocks(page);
 
     await page.goto('/');
-    await createShow(page, {
-        title: 'Old Title',
-        status: 'watching',
-        seasons: [
+    await createShow(
+        page,
+        'Old Title',
+        [
             {
-                number: 1,
-                episodes: [
-                    {
-                        number: 1,
-                        title: 'Pilot',
-                        releasedAt: new Date('2020-01-01'),
-                    },
-                ],
+                title: 'Pilot',
+                releasedAt: new Date('2020-01-01'),
             },
         ],
-        externalIds: { tmdb: 2 },
-    });
+        { status: 'watching', externalIds: { tmdb: 2 } },
+    );
 
     await expect(page.getByText('Old Title')).toBeVisible();
 

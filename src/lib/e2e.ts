@@ -1,15 +1,24 @@
 import { after } from '@noeldemartin/utils';
 
 import { Account } from '@/schemas/Account';
+import { Episode } from '@/schemas/Episode';
 import { Profile } from '@/schemas/Profile';
 import { Root } from '@/schemas/Root';
+import { Season } from '@/schemas/Season';
 import { Show } from '@/schemas/Show';
 import { waitForLocalSync } from '@/lib/jazz';
 
 function e2e() {
     return {
         waitForLocalSync,
-        jazzSchemas: { Show, Root, Account, Profile },
+        jazzSchemas: {
+            Account,
+            Episode,
+            Profile,
+            Root,
+            Season,
+            Show,
+        },
         async getJazzAccount() {
             for (let i = 0; i < 10; i++) {
                 try {

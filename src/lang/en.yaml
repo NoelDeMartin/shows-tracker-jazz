@@ -8,7 +8,8 @@ header:
 
 home:
     title: Up next
-    open: Open
+    pendingEpisodes: '{{num}} new episodes'
+    upcomingEpisodes: 'new episode {{when}}'
     refresh: Update shows
     refreshSuccess: Shows updated successfully
     refreshError: Failed to update shows

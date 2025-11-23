@@ -7,16 +7,17 @@ import { RouterProvider } from 'react-router-dom';
 import { StrictMode } from 'react';
 
 import { Account } from '@/schemas/Account';
-import { ThemeProvider } from '@/components/theme';
 import { betterAuthClient } from '@/lib/auth';
+import { initDayjs } from '@/lib/dayjs';
 import { initE2E } from '@/lib/e2e';
 import { initLang } from '@/lang';
 import { router } from '@/pages';
+import { ThemeProvider } from '@/components/theme';
 
 import './index.css';
 
 // oxlint-disable-next-line prefer-top-level-await no-floating-promises
-Promise.all([initLang(), initE2E()]).then(() => {
+Promise.all([initDayjs(), initLang(), initE2E()]).then(() => {
     createRoot(document.getElementById('root')!).render(
         <StrictMode>
             <JazzReactProvider
