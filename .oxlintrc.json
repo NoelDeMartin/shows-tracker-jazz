@@ -14,6 +14,7 @@
         "id-length": "off",
         "max-lines": "off",
         "max-lines-per-function": "off",
+        "new-cap": "off",
         "no-await-in-loop": "off",
         "no-confusing-void-expression": "off",
         "no-continue": "off",
