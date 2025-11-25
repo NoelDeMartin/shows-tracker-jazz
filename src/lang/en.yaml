@@ -66,6 +66,7 @@ seasons:
     empty: No episodes yet. Add one to get started.
     expand: Expand season
     collapse: Collapse season
+    markWatched: Mark season watched
 
 episodes:
     add: Add Episode
@@ -74,7 +75,6 @@ episodes:
     count_one: '{{count}} episode'
     count_other: '{{count}} episodes'
     markWatched: Mark watched
-    markWatchedAria: Mark as watched
     watched: Watched
     duration: '{{duration}} min'
 

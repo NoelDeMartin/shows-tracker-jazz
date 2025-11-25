@@ -181,6 +181,8 @@ export default function Show() {
                             value={show.status}
                             onValueChange={(value) => {
                                 show.$jazz.set('status', value as ShowStatus);
+
+                                updateShowCache(show);
                             }}
                         >
                             <SelectTrigger className={cn('w-auto', statusBgColor, statusColor)}>
@@ -213,6 +215,18 @@ export default function Show() {
                         const seasonId = season.$jazz.id;
                         const isExpanded = expandedSeasons.has(seasonId);
                         const episodeCount = season.episodes.length;
+                        const unwatchedEpisodes = season.episodes.filter((episode) => !episode.watchedAt);
+                        const hasUnwatchedEpisodes = unwatchedEpisodes.length > 0;
+
+                        const handleMarkSeasonWatched = () => {
+                            const now = new Date();
+
+                            unwatchedEpisodes.forEach((episode) => {
+                                episode.$jazz.set('watchedAt', now);
+                            });
+
+                            updateShowCache(show);
+                        };
 
                         return (
                             <Card key={seasonId}>
@@ -227,18 +241,32 @@ export default function Show() {
                                             )}
                                         </CardTitle>
                                         {episodeCount > 0 && (
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => toggleSeason(seasonId)}
-                                                aria-label={isExpanded ? t('seasons.collapse') : t('seasons.expand')}
-                                            >
-                                                <ChevronDown
-                                                    className={cn('size-5 transition-transform', {
-                                                        'rotate-180': isExpanded,
-                                                    })}
-                                                />
-                                            </Button>
+                                            <div className="flex items-center gap-2">
+                                                {hasUnwatchedEpisodes && (
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={handleMarkSeasonWatched}
+                                                    >
+                                                        <Check className="size-4" />
+                                                        <span>{t('seasons.markWatched')}</span>
+                                                    </Button>
+                                                )}
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => toggleSeason(seasonId)}
+                                                    aria-label={
+                                                        isExpanded ? t('seasons.collapse') : t('seasons.expand')
+                                                    }
+                                                >
+                                                    <ChevronDown
+                                                        className={cn('size-5 transition-transform', {
+                                                            'rotate-180': isExpanded,
+                                                        })}
+                                                    />
+                                                </Button>
+                                            </div>
                                         )}
                                     </div>
                                 </CardHeader>
@@ -274,7 +302,6 @@ export default function Show() {
 
                                                                         updateShowCache(show);
                                                                     }}
-                                                                    aria-label={t('episodes.markWatchedAria')}
                                                                 >
                                                                     <Check className="size-4" />
                                                                     <span>{t('episodes.markWatched')}</span>

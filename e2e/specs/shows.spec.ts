@@ -249,9 +249,47 @@ test('can mark episode as watched', async ({ page }) => {
     await page.getByRole('button', { name: 'Expand season' }).click();
     await expect(page.getByText('Episode 1: Uno')).toBeVisible();
     await expect(page.getByText('Watched', { exact: true })).not.toBeVisible();
-    await expect(page.getByRole('button', { name: 'Mark as watched' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Mark watched' })).toBeVisible();
 
-    await page.getByRole('button', { name: 'Mark as watched' }).click();
+    await page.getByRole('button', { name: 'Mark watched' }).click();
     await expect(page.getByText('Watched', { exact: true })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Mark as watched' })).not.toBeVisible();
+    await expect(page.getByRole('button', { name: 'Mark watched' })).not.toBeVisible();
+});
+
+test('can mark whole season as watched', async ({ page }) => {
+    await page.goto('/shows');
+    await createShow(
+        page,
+        'The Wire',
+        [
+            {
+                title: 'The Target',
+                description: 'The first episode introduces the Baltimore drug scene',
+            },
+            {
+                title: 'The Detail',
+                description: 'McNulty assembles his team',
+            },
+            {
+                title: 'The Buys',
+                description: 'The investigation deepens',
+            },
+        ],
+        { status: 'watching' },
+    );
+
+    await page.getByRole('link', { name: 'The Wire (Watching)' }).click();
+    await expect(page.getByRole('button', { name: 'Mark season watched' })).toBeVisible();
+
+    await page.getByRole('button', { name: 'Expand season' }).click();
+    await expect(page.getByText('Episode 1: The Target')).toBeVisible();
+    await expect(page.getByText('Episode 2: The Detail')).toBeVisible();
+    await expect(page.getByText('Episode 3: The Buys')).toBeVisible();
+    await expect(page.getByText('Watched', { exact: true })).not.toBeVisible();
+    await expect(page.getByRole('button', { name: 'Mark watched' })).toHaveCount(3);
+
+    await page.getByRole('button', { name: 'Mark season watched' }).click();
+    await expect(page.getByText('Watched', { exact: true })).toHaveCount(3);
+    await expect(page.getByRole('button', { name: 'Mark watched' })).not.toBeVisible();
+    await expect(page.getByRole('button', { name: 'Mark season watched' })).not.toBeVisible();
 });
