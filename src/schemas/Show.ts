@@ -1,13 +1,10 @@
 import CheckCircle2 from '~icons/lucide/check-circle-2';
 import Clock from '~icons/lucide/clock';
-import dayjs from 'dayjs';
 import Play from '~icons/lucide/play';
 import XCircle from '~icons/lucide/x-circle';
 import { co, z } from 'jazz-tools';
-import type { Dayjs } from 'dayjs';
 
 import { Season } from '@/schemas/Season';
-import type { Episode } from '@/schemas/Episode';
 
 export const showStatuses = ['planned', 'watching', 'completed', 'dropped'] as const;
 export type ShowStatus = (typeof showStatuses)[number];
@@ -25,39 +22,20 @@ export const Show = co.map({
         imdb: z.string().optional(),
         tmdb: z.number().optional(),
     }),
+    cache: z.object({
+        unwatchedEpisodesDates: z.array(z.date().nullable()),
+    }),
 });
 
 export type Show = co.loaded<typeof Show>;
 export type ShowWithEpisodes = co.loaded<typeof Show, { seasons: { $each: { episodes: { $each: true } } } }>;
 
-export function hasEpisodes(show: Show): show is ShowWithEpisodes {
-    return (
-        show.seasons.$isLoaded &&
-        show.seasons.every(
-            (season) =>
-                season.$isLoaded && season.episodes.$isLoaded && season.episodes.every((episode) => episode.$isLoaded),
-        )
+export function updateShowCache(show: ShowWithEpisodes) {
+    const unwatchedEpisodesDates = show.seasons.flatMap((season) =>
+        season.episodes.flatMap((episode) => (episode.watchedAt ? [] : [episode.releasedAt ?? null])),
     );
-}
 
-export function isFutureEpisode(episode: Episode) {
-    return episode.releasedAt && dayjs(episode.releasedAt).isAfter();
-}
-
-export function isPastEpisode(episode: Episode) {
-    return episode.releasedAt ? dayjs(episode.releasedAt).isBefore() : true;
-}
-
-export function isUpcomingEpisode(episode: Episode, upcomingDeadline: Dayjs) {
-    return !episode.watchedAt && isFutureEpisode(episode) && dayjs(episode.releasedAt).isBefore(upcomingDeadline);
-}
-
-export function hasNewOrUpcomingEpisodes(show: ShowWithEpisodes, upcomingDeadline: Dayjs) {
-    return show.seasons.some((season) =>
-        season.episodes.some(
-            (episode) => !episode.watchedAt && (isPastEpisode(episode) || isUpcomingEpisode(episode, upcomingDeadline)),
-        ),
-    );
+    show.$jazz.set('cache', { unwatchedEpisodesDates });
 }
 
 export function getStatusVars(status: ShowStatus) {

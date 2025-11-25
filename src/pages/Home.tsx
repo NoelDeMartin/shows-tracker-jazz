@@ -12,23 +12,27 @@ import Page from '@/components/layout/Page';
 import ShowImage from '@/components/shows/ShowImage';
 import { Button } from '@/components/shadcn/button';
 import { cn } from '@/lib/shadcn';
-import { isFutureEpisode, isUpcomingEpisode, type ShowWithEpisodes } from '@/schemas/Show';
-import { useActiveShows } from '@/schemas/Root';
+import { useShows } from '@/schemas/Root';
+import type { Show } from '@/schemas/Show';
 
-function ShowStatusBadge({ show, className }: { show: ShowWithEpisodes; className?: string }) {
-    // FIXME this type cast shouldn't be necessary
-    const episodes = show.seasons.flatMap((season) => season.episodes as readonly (typeof season.episodes)[number][]);
+function useUpcomingDeadline() {
+    return useMemo(() => dayjs().add(7, 'days'), []);
+}
 
-    const upcomingDeadline = useMemo(() => dayjs().add(7, 'days'), []);
+function ShowStatusBadge({ show, className }: { show: Show; className?: string }) {
+    const now = useMemo(() => dayjs(), []);
+    const upcomingDeadline = useUpcomingDeadline();
     const pendingEpisodes = useMemo(
-        () => episodes.filter((episode) => !episode.watchedAt && !isFutureEpisode(episode)).length,
-        [episodes],
+        () => show.cache.unwatchedEpisodesDates.filter((date) => !date || now.isAfter(date)).length,
+        [show],
     );
-    const upcomingEpisodeAt = useMemo(() => {
-        const releasedAt = episodes.find((episode) => isUpcomingEpisode(episode, upcomingDeadline))?.releasedAt;
+    const upcomingEpisodeDate = useMemo(() => {
+        const date = show.cache.unwatchedEpisodesDates.find(
+            (date) => date && now.isBefore(date) && upcomingDeadline.isAfter(date),
+        );
 
-        return releasedAt ? dayjs(releasedAt) : undefined;
-    }, [episodes, upcomingDeadline]);
+        return date && dayjs(date);
+    }, [show, now, upcomingDeadline]);
     const textClass = 'sr-only group-hover:not-sr-only';
 
     return (
@@ -49,8 +53,8 @@ function ShowStatusBadge({ show, className }: { show: ShowWithEpisodes; classNam
                             ? t('home.pendingEpisodes', {
                                   num: `<span>${pendingEpisodes}</span><span class="${textClass}">`,
                               })
-                            : upcomingEpisodeAt
-                              ? `<span class="${textClass}">${t('home.upcomingEpisodes', { when: upcomingEpisodeAt.fromNow() })}`
+                            : upcomingEpisodeDate
+                              ? `<span class="${textClass}">${t('home.upcomingEpisodes', { when: upcomingEpisodeDate.fromNow() })}`
                               : ''
                     }</span>`,
                 }}
@@ -59,7 +63,7 @@ function ShowStatusBadge({ show, className }: { show: ShowWithEpisodes; classNam
     );
 }
 
-function ShowCard({ show }: { show: ShowWithEpisodes }) {
+function ShowCard({ show }: { show: Show }) {
     return (
         <Link
             to={`/shows/${show.$jazz.id}`}
@@ -75,7 +79,17 @@ function ShowCard({ show }: { show: ShowWithEpisodes }) {
 }
 
 export default function Home() {
-    const [shows, showsLoader] = useActiveShows();
+    const shows = useShows();
+    const upcomingDeadline = useUpcomingDeadline();
+    const activeShows = useMemo(
+        () =>
+            shows?.filter(
+                (show) =>
+                    show.status === 'watching' &&
+                    show.cache.unwatchedEpisodesDates.some((date) => !date || upcomingDeadline.isAfter(date)),
+            ) ?? [],
+        [shows],
+    );
     const [isRefreshing, setIsRefreshing] = useState(false);
     const refreshShows = useCallback(async () => {
         setIsRefreshing(true);
@@ -101,10 +115,8 @@ export default function Home() {
                 </Button>
             }
         >
-            {showsLoader}
-
             <ul className="isolate grid grid-cols-4">
-                {shows.map((show) => (
+                {activeShows.map((show) => (
                     <li key={show.$jazz.id}>
                         <ShowCard show={show} />
                     </li>

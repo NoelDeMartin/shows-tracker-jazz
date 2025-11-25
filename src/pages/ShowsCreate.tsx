@@ -4,8 +4,8 @@ import Play from '~icons/lucide/play';
 import Plus from '~icons/lucide/plus';
 import XCircle from '~icons/lucide/x-circle';
 import { t } from 'i18next';
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import type { ComponentType } from 'react';
 
 import { Button } from '@/components/shadcn/button';
@@ -15,7 +15,7 @@ import { Input } from '@/components/shadcn/input';
 import { Season } from '@/schemas/Season';
 import { SeasonForm } from '@/components/forms/SeasonForm';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/shadcn/select';
-import { Show } from '@/schemas/Show';
+import { Show, updateShowCache } from '@/schemas/Show';
 import { Textarea } from '@/components/shadcn/textarea';
 import { useShows } from '@/schemas/Root';
 import { waitForLocalSync } from '@/lib/jazz';
@@ -117,7 +117,10 @@ export default function ShowsCreate() {
             endDate: endDate ? new Date(endDate) : undefined,
             seasons: jazzSeasons,
             externalIds: {},
+            cache: { unwatchedEpisodesDates: [] },
         });
+
+        updateShowCache(newShow);
 
         shows.$jazz.push(newShow);
 

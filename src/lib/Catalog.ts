@@ -1,12 +1,11 @@
 import z from 'zod';
 import { facade, tap } from '@noeldemartin/utils';
-import type { co } from 'jazz-tools';
 
 import TMDB from '@/lib/TMDB';
 import { Account } from '@/schemas/Account';
 import { Episode } from '@/schemas/Episode';
 import { Season } from '@/schemas/Season';
-import { Show } from '@/schemas/Show';
+import { Show, updateShowCache, type ShowWithEpisodes } from '@/schemas/Show';
 import { waitForLocalSync } from '@/lib/jazz';
 import type { TMDBShow, TMDBShowDetails, TMDBShowExternalIds } from '@/lib/TMDB';
 
@@ -51,6 +50,7 @@ export class CatalogService {
             status: 'planned',
             seasons: [],
             externalIds: {},
+            cache: { unwatchedEpisodesDates: [] },
         });
 
         await this.updateShow(show, details, externalIds);
@@ -156,6 +156,7 @@ export class CatalogService {
                     status: TVISO_STATUS_MAP[show.status.toLowerCase()] ?? 'planned',
                     seasons: [],
                     externalIds: {},
+                    cache: { unwatchedEpisodesDates: [] },
                 });
 
                 await this.updateShow(newShow, showDetails, externalIds);
@@ -205,7 +206,7 @@ export class CatalogService {
     }
 
     private async updateShow(
-        show: co.loaded<typeof Show, { seasons: { $each: { episodes: { $each: true } } } }>,
+        show: ShowWithEpisodes,
         details: TMDBShowDetails,
         externalIds?: TMDBShowExternalIds,
     ): Promise<void> {
@@ -279,6 +280,8 @@ export class CatalogService {
                 }
             }
         }
+
+        updateShowCache(show);
 
         await waitForLocalSync();
     }

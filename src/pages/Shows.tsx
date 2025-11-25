@@ -16,9 +16,10 @@ import {
 } from '@/components/shadcn/dropdown-menu';
 import { Button } from '@/components/shadcn/button';
 import { cn } from '@/lib/shadcn';
-import { getStatusVars, type Show, type ShowStatus } from '@/schemas/Show';
+import { getStatusVars } from '@/schemas/Show';
 import { Input } from '@/components/shadcn/input';
 import { useShows } from '@/schemas/Root';
+import type { Show, ShowStatus } from '@/schemas/Show';
 
 function ShowStatusBadge({ show, className }: { show: Show; className?: string }) {
     const { backgroundClass, Icon } = useMemo(() => getStatusVars(show.status), [show]);

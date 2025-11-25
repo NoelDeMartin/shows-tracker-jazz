@@ -5,12 +5,13 @@ import { Episode } from '@/schemas/Episode';
 import { Profile } from '@/schemas/Profile';
 import { Root } from '@/schemas/Root';
 import { Season } from '@/schemas/Season';
-import { Show } from '@/schemas/Show';
+import { Show, updateShowCache } from '@/schemas/Show';
 import { waitForLocalSync } from '@/lib/jazz';
 
 function e2e() {
     return {
         waitForLocalSync,
+        updateShowCache,
         jazzSchemas: {
             Account,
             Episode,

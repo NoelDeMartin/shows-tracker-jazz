@@ -7,8 +7,8 @@ import Pencil from '~icons/lucide/pencil';
 import Play from '~icons/lucide/play';
 import Trash2 from '~icons/lucide/trash-2';
 import XCircle from '~icons/lucide/x-circle';
-import { t } from 'i18next';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { t } from 'i18next';
 import { useAccount, useCoState } from 'jazz-tools/react-core';
 import { useState } from 'react';
 import type { ComponentType } from 'react';
@@ -29,7 +29,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { waitForLocalSync } from '@/lib/jazz';
 import { cn } from '@/lib/shadcn';
 import { Account } from '@/schemas/Account';
-import { Show as CoShow } from '@/schemas/Show';
+import { Show as CoShow, updateShowCache } from '@/schemas/Show';
 
 type ShowStatus = 'planned' | 'watching' | 'completed' | 'dropped';
 
@@ -271,6 +271,8 @@ export default function Show() {
                                                                     size="sm"
                                                                     onClick={() => {
                                                                         episode.$jazz.set('watchedAt', new Date());
+
+                                                                        updateShowCache(show);
                                                                     }}
                                                                     aria-label={t('episodes.markWatchedAria')}
                                                                 >
