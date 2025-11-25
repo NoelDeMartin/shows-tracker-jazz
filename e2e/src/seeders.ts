@@ -29,11 +29,11 @@ export async function createShow(
     await page.evaluate(async (attributes) => {
         const account = await $e2e.getJazzAccount();
         const { root } = await account.$jazz.ensureLoaded({ resolve: { root: { shows: { $each: true } } } });
+
+        // oxlint-disable-next-line no-unsafe-argument
         const show = $e2e.jazzSchemas.Show.create(attributes);
 
         $e2e.updateShowCache(show);
-
-        // oxlint-disable-next-line no-unsafe-argument
         root.shows.$jazz.push(show);
 
         await $e2e.waitForLocalSync();
