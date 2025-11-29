@@ -5,6 +5,7 @@ import { Image, useAccount } from 'jazz-tools/react';
 import { useState } from 'react';
 
 import LoginForm from '@/components/forms/LoginForm';
+import RegistrationForm from '@/components/forms/RegistrationForm';
 import { Avatar, AvatarFallback } from '@/components/shadcn/avatar';
 import { Button } from '@/components/shadcn/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/shadcn/dialog';
@@ -20,6 +21,7 @@ import { Account } from '@/schemas/Account';
 
 export default function AppHeaderAccount() {
     const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
+    const [isRegisterMode, setIsRegisterMode] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const account = useAccount(Account, { resolve: { profile: { avatar: true } } });
 
@@ -65,13 +67,41 @@ export default function AppHeaderAccount() {
                     )}
                 </DropdownMenuContent>
             </DropdownMenu>
-            <Dialog open={isLoginDialogOpen} onOpenChange={setIsLoginDialogOpen}>
+            <Dialog
+                open={isLoginDialogOpen}
+                onOpenChange={(open) => {
+                    setIsLoginDialogOpen(open);
+                    if (!open) {
+                        setIsRegisterMode(false);
+                    }
+                }}
+            >
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>{t('header.loginTitle')}</DialogTitle>
-                        <DialogDescription>{t('header.loginDescription')}</DialogDescription>
+                        <DialogTitle>
+                            {isRegisterMode ? t('header.registerTitle') : t('header.loginTitle')}
+                        </DialogTitle>
+                        <DialogDescription>
+                            {isRegisterMode ? t('header.registerDescription') : t('header.loginDescription')}
+                        </DialogDescription>
                     </DialogHeader>
-                    <LoginForm onSuccess={() => setIsLoginDialogOpen(false)} />
+                    {isRegisterMode ? (
+                        <RegistrationForm
+                            onSuccess={() => {
+                                setIsLoginDialogOpen(false);
+                                setIsRegisterMode(false);
+                            }}
+                            onSwitchToLogin={() => setIsRegisterMode(false)}
+                        />
+                    ) : (
+                        <LoginForm
+                            onSuccess={() => {
+                                setIsLoginDialogOpen(false);
+                                setIsRegisterMode(false);
+                            }}
+                            onSwitchToRegister={() => setIsRegisterMode(true)}
+                        />
+                    )}
                 </DialogContent>
             </Dialog>
         </>

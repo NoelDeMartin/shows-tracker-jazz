@@ -8,6 +8,7 @@ import { betterAuthClient } from '@/lib/auth';
 
 interface LoginFormProps {
     onSuccess?: () => void;
+    onSwitchToRegister?: () => void;
 }
 
 const TEST_USER = {
@@ -16,13 +17,29 @@ const TEST_USER = {
     password: '12345679!',
 };
 
-export default function LoginForm({ onSuccess }: LoginFormProps) {
+export default function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormProps) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        onSuccess?.();
+
+        try {
+            const { error } = await betterAuthClient.signIn.email({
+                email,
+                password,
+            });
+
+            if (error) {
+                alert(error.message);
+
+                return;
+            }
+
+            onSuccess?.();
+        } catch (error) {
+            alert(error instanceof Error ? error.message : t('login.error'));
+        }
     };
 
     const handleTestLogin = useCallback(async () => {
@@ -76,13 +93,23 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
                     placeholder={t('login.passwordPlaceholder')}
                 />
             </div>
-            <div className="flex justify-end gap-2">
-                {import.meta.env.DEV && (
-                    <Button type="button" variant="outline" onClick={handleTestLogin}>
-                        {t('login.test')}
-                    </Button>
+            <div className="flex flex-col gap-2">
+                <div className="flex justify-end gap-2">
+                    {import.meta.env.DEV && (
+                        <Button type="button" variant="outline" onClick={handleTestLogin}>
+                            {t('login.test')}
+                        </Button>
+                    )}
+                    <Button type="submit">{t('login.submit')}</Button>
+                </div>
+                {onSwitchToRegister && (
+                    <div className="text-muted-foreground text-center text-sm">
+                        {t('login.dontHaveAccount')}{' '}
+                        <button type="button" onClick={onSwitchToRegister} className="text-primary hover:underline">
+                            {t('login.switchToRegister')}
+                        </button>
+                    </div>
                 )}
-                <Button type="submit">{t('login.submit')}</Button>
             </div>
         </form>
     );

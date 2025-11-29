@@ -4,6 +4,8 @@ header:
     login: Log In
     loginTitle: Log In
     loginDescription: Enter your credentials to access your account.
+    registerTitle: Sign Up
+    registerDescription: Create a new account to get started.
     logout: Log Out
 
 home:
@@ -99,6 +101,22 @@ login:
     passwordPlaceholder: Enter your password
     submit: Log In
     test: Log In to Test Server
+    dontHaveAccount: Don't have an account?
+    switchToRegister: Sign Up
+    error: An error occurred during login. Please try again.
+
+register:
+    name: Name
+    email: Email
+    password: Password
+    namePlaceholder: Enter your name
+    emailPlaceholder: Enter your email
+    passwordPlaceholder: Enter your password
+    submit: Sign Up
+    submitting: Signing Up...
+    alreadyHaveAccount: Already have an account?
+    switchToLogin: Log In
+    error: An error occurred during registration. Please try again.
 
 search:
     placeholder: Search TV shows...
