@@ -1,0 +1,18 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"/><link rel="icon" href="/favicon.ico"/><meta name="viewport" content="width=device-width,initial-scale=1"/><script>(function () {
+                const basePath = '/shows-tracker-jazz/';
+                const url = new URL(location.href);
+                const queryParameters = {};
+
+                url.searchParams.forEach((value, key) => (queryParameters[key] = value));
+
+                localStorage.setItem(
+                    'spa-redirect',
+                    JSON.stringify({
+                        path: url.pathname.substring(basePath.length - 1),
+                        hash: url.hash,
+                        query: queryParameters,
+                    }),
+                );
+
+                location.href = basePath;
+            })();</script></head></html>
