@@ -65,7 +65,7 @@ jobs:
               with:
                   node-version-file: '.nvmrc'
                   cache: 'pnpm'
-            - run: cp .env.development .env
+            - run: cp .env.production .env
             - run: echo "VITE_TMDB_API_KEY=${{ secrets.TMDB_API_KEY }}" >> .env
             - run: pnpm install
             - run: pnpm run deploy
