@@ -78,9 +78,7 @@ export default function AppHeaderAccount() {
             >
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>
-                            {isRegisterMode ? t('header.registerTitle') : t('header.loginTitle')}
-                        </DialogTitle>
+                        <DialogTitle>{isRegisterMode ? t('header.registerTitle') : t('header.loginTitle')}</DialogTitle>
                         <DialogDescription>
                             {isRegisterMode ? t('header.registerDescription') : t('header.loginDescription')}
                         </DialogDescription>
