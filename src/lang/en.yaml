@@ -29,6 +29,15 @@ shows:
         watching: Watching
         completed: Completed
         dropped: Dropped
+    view:
+        grid: Grid view
+        list: List view
+    bulkEdit:
+        title: Edit in bulk
+        selectAll: Select all
+        selected: '{{count}} selected'
+        selectStatus: Select status
+        cancel: Cancel
 
 show:
     notFound: '404: Show Not Found'

@@ -293,3 +293,39 @@ test('can mark whole season as watched', async ({ page }) => {
     await expect(page.getByRole('button', { name: 'Mark watched' })).not.toBeVisible();
     await expect(page.getByRole('button', { name: 'Mark season watched' })).not.toBeVisible();
 });
+
+test('can edit shows in bulk and change their status', async ({ page }) => {
+    await page.goto('/shows');
+
+    await createShow(page, 'The Office', [], { status: 'planned' });
+    await createShow(page, 'Parks and Recreation', [], { status: 'planned' });
+
+    await page.getByRole('button', { name: 'More options' }).click();
+    await page.getByRole('menuitem', { name: 'Edit in bulk' }).click();
+
+    await expect(page.getByLabel('Select all')).toBeVisible();
+    await expect(page.locator('input[type="checkbox"]')).toHaveCount(3);
+
+    const checkboxes = page.locator('input[type="checkbox"]');
+    await checkboxes.nth(1).click();
+    await checkboxes.nth(2).click();
+
+    await expect(page.getByText('2 selected')).toBeVisible();
+
+    const statusSelector = page
+        .locator('button')
+        .filter({ hasText: /Select status|Planned|Watching|Completed|Dropped/ })
+        .first();
+    await statusSelector.click();
+    await page.getByRole('option', { name: 'Watching' }).click();
+
+    await expect(page.getByText('The Office')).toBeVisible();
+    await expect(page.getByText('Parks and Recreation')).toBeVisible();
+    await expect(page.getByText('Watching')).toHaveCount(2);
+
+    await page.getByRole('button', { name: 'Cancel' }).click();
+
+    await expect(page.getByLabel('Select all')).not.toBeVisible();
+    await expect(page.getByText('The Office')).toBeVisible();
+    await expect(page.getByText('Parks and Recreation')).toBeVisible();
+});
