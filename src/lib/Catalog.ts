@@ -1,5 +1,7 @@
 import z from 'zod';
 import { facade, tap } from '@noeldemartin/utils';
+import { t } from 'i18next';
+import { toast } from 'sonner';
 
 import TMDB from '@/lib/TMDB';
 import { Account } from '@/schemas/Account';
@@ -184,7 +186,7 @@ export class CatalogService {
     async refreshShows(): Promise<void> {
         const account = Account.getMe();
         const { root } = await account.$jazz.ensureLoaded({
-            resolve: { root: { shows: { $each: { seasons: { $each: { episodes: { $each: true } } } } } } },
+            resolve: { root: { shows: { $each: true } } },
         });
 
         const activeShows = root.shows.filter((show) => show.status === 'watching');
@@ -196,10 +198,22 @@ export class CatalogService {
                 continue;
             }
 
+            const showWithEpisodes = await Show.load(show.$jazz.id, {
+                resolve: {
+                    seasons: { $each: { episodes: { $each: true } } },
+                },
+            });
+
+            if (!showWithEpisodes.$isLoaded) {
+                toast.error(t('catalog.showNotLoaded', { title: show.title }));
+
+                continue;
+            }
+
             const details = await TMDB.getShowDetails(tmdbId);
             const externalIds = await TMDB.getShowExternalIds(tmdbId);
 
-            await this.updateShow(show, details, externalIds);
+            await this.updateShow(showWithEpisodes, details, externalIds);
         }
 
         await waitForLocalSync();

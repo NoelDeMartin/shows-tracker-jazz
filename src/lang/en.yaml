@@ -39,6 +39,9 @@ shows:
         selectStatus: Select status
         cancel: Cancel
 
+catalog:
+    showNotLoaded: Show "{{title}}" could not be loaded
+
 show:
     notFound: '404: Show Not Found'
     unknownError: Unknown error
