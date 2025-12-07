@@ -43,23 +43,29 @@ const TVISO_STATUS_MAP: Record<string, 'planned' | 'watching' | 'completed' | 'd
 
 export class CatalogService {
     async addShow(tmdbShow: TMDBShow): Promise<void> {
-        const account = Account.getMe();
-        const { root } = await account.$jazz.ensureLoaded({ resolve: { root: { shows: { $each: true } } } });
-        const details = await TMDB.getShowDetails(tmdbShow.id);
-        const externalIds = await TMDB.getShowExternalIds(tmdbShow.id);
-        const show = Show.create({
-            title: tmdbShow.name,
-            status: 'planned',
-            seasons: [],
-            externalIds: {},
-            cache: { unwatchedEpisodesDates: [] },
-        });
+        try {
+            const account = Account.getMe();
+            const { root } = await account.$jazz.ensureLoaded({ resolve: { root: { shows: { $each: true } } } });
+            const details = await TMDB.getShowDetails(tmdbShow.id);
+            const externalIds = await TMDB.getShowExternalIds(tmdbShow.id);
+            const show = Show.create({
+                title: tmdbShow.name,
+                status: 'planned',
+                seasons: [],
+                externalIds: {},
+                cache: { unwatchedEpisodesDates: [] },
+            });
 
-        await this.updateShow(show, details, externalIds);
+            await this.updateShow(show, details, externalIds);
 
-        root.shows.$jazz.push(show);
+            root.shows.$jazz.push(show);
 
-        await waitForLocalSync();
+            await waitForLocalSync();
+        } catch (error) {
+            console.error(error);
+
+            toast.error(t('catalog.addShowError'));
+        }
     }
 
     async importFromTViso(

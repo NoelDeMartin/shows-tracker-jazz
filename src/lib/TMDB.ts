@@ -8,13 +8,13 @@ const TMDBShowSchema = object({
     id: number(),
     name: string(),
     overview: string().nullable().optional(),
-    first_air_date: string().optional(),
-    last_air_date: string().optional(),
+    first_air_date: string().nullable().optional(),
+    last_air_date: string().nullable().optional(),
     poster_path: string().nullable().optional(),
     backdrop_path: string().nullable().optional(),
-    number_of_seasons: number().optional(),
-    number_of_episodes: number().optional(),
-    vote_average: number().optional(),
+    number_of_seasons: number().nullable().optional(),
+    number_of_episodes: number().nullable().optional(),
+    vote_average: number().nullable().optional(),
 });
 
 const TMDBShowExternalIdsSchema = object({
@@ -25,7 +25,7 @@ const TMDBSeasonSchema = object({
     id: number(),
     name: string(),
     season_number: number(),
-    episode_count: number().optional(),
+    episode_count: number().nullable().optional(),
     overview: string().nullable().optional(),
     air_date: string().nullable().optional(),
 });

@@ -41,6 +41,7 @@ shows:
 
 catalog:
     showNotLoaded: Show "{{title}}" could not be loaded
+    addShowError: Failed to add show
 
 show:
     notFound: '404: Show Not Found'
