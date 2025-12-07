@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/shows-tracker-jazz/sw.js', { scope: '/shows-tracker-jazz/' })})}
